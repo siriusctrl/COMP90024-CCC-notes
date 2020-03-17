@@ -15,5 +15,30 @@
 
 
 ## Lecture 3 & 4 - Domain Drivers – tour of some big data projects
+1. compute scaling
+    - Moore's law is no longer working, CPU stop goes faster as we expected
+2. network scaling
+    - volume of data on network grows each year
+3. massive amount of data generated among a time requires compute infrasture
+    e.g. mapping the sky with data from tele-scope
 
+5. Cloud Computing in Different Domains
+    - **High energy physics**
+    - Astrophysics
+    - **Macro-micro simulations**
+    - Electronics
+    - Arts and humanities
+    - Life sciences
+    - Social sciences
+        - Aurin
+    - Clinical sciences
+    - Data sharing and ethics
+    - **e-Health**
+        - **Security**
+    - environmental
+    - social
+    - geographical
+    - Genome
 
+## interesting discussion
+- [difference between grid, cluster and cloud computing](https://canvas.lms.unimelb.edu.au/courses/17514/discussion_topics/139892)
