@@ -122,3 +122,118 @@ Cloud computing is a model for enabling ubiquitous, convenient, on-demand networ
 | | Iaas| Paas|Saas|
 |---|---|---|---|
 | example| Amazon Web Services<br>Oracle Public Cloud<br>NeCTAR| Azure| Gmail|
+
+
+## Week 6 – Web Services, ReST Services ~~and Twitter demo~~
+
+### SOA
+
+1. What's in an Architecture?
+    - A (system) architecture is just the way different components are distributed on computers, 
+    - and the way in which they interact with each other.
+2. Why Service-oriented Architectures - SOA?
+    - When an architecture is completely contained within the same machine, components can communicate directly
+        - e.g. through function calls or object instantiations.
+    - However, when components are distributed such a direct approach typically cannot be used  (e.g. Assignment 2!)
+    - Therefore, components (more properly, systems) have to interact in more loosely-coupled ways. 
+    - **Services** are often used for this. Typically combinations and commonality of services can be used to form a **Service-oriented Architecture (SoA)**.
+3. SOA goal
+
+|||
+|---|---|
+|A set of externally facing services|that a business wants to provide to external collaborators|
+|An architectural pattern|based on service providers, one or more brokers, and service requestors based on agreed service descriptions|
+|A set of architectural principles, patterns and criteria|that support modularity, encapsulation, loose coupling, separation of concerns, reuse and composability|
+|A programming model|complete with standards, tools and technologies that supports development and support of services (note that there can be many flavours of services)|
+|A middleware solution|optimized for service assembly, orchestration, monitoring, and management (Can include tools and approaches that combine services together.)<br/>e.g. as workflows. - later on security lecture|
+
+4. SOA design principle
+
+|||exmaple|
+|---|---|---|
+|Standardized service contract| Services adhere to a communications agreement, as defined collectively by one or more service-description documents.|Use defined twitter API|
+|Service loose coupling| Services maintain a relationship that minimizes dependencies and only requires that they maintain an awareness of each other.|
+|Service abstraction| Beyond descriptions in the service contract, services hide logic from the outside world.|Twitter decide the API for you to use i.e. the rule how you can see inside through the Twitter, hide things which you have no access to
+|Service reusability| Logic is divided into services with the intention of promoting reuse.|
+|Service autonomy| Services have control over the logic they encapsulate.|you can have tweets older than 2 weeks than you really can't
+|Service statelessness| Services minimize resource consumption by deferring the management of state information when necessary.|
+|Service discoverability| Services are supplemented with communicative meta data by which they can be effectively discovered and interpreted.|
+|Service composability| Services are effective composition participants, regardless of the size and complexity of the composition.|
+|Service granularity| a design consideration to provide optimal scope at the right granular level of the business functionality in a service operation.|
+|Service normalization| services are decomposed and/or consolidated to a level that minimizes redundancy, for performance optimization, access, and aggregation.|
+|Service optimization| high-quality services that serve specific functions are generally preferable to general purpose low-quality ones.|
+|Service relevance| functionality is presented at a level of granularity recognized by the user as a meaningful service.|
+|Service encapsulation| many services are consolidated for use under a SOA and their inner workings hidden.|
+|Service location transparency| the ability of a service consumer to invoke a service regardless of its actual location in the network.|client only use url to use the service on the web regardless of location of service
+
+### Web Services
+1. Web Services & SOA
+    - Web Services = SOA for the Web
+    - Both use HTTP, hence can run over the web (although SOAP/WS often run over other protocols as well)
+    - Web services used to implement SOA
+2. Web Services flavor
+    - (main focus of the lecture) SOAP-based Web Services
+    - (main focus of the lecture) ReST-based Web Services
+        - Both flavours to call services over HTTP
+    - Geospatial services (WFS, WMS, WPS…)
+    - Health services (HL7)
+    - SDMX (Statistical Data Markup eXchange)
+        - approach the statistical data around the world
+3. SOAP/WS v.s. ReST  
+    SOAP(Simple Object Access Protocol)
+
+|ReST|SOAP/WS|
+|---|---|
+is centered around resources, and the way they can be manipulated (added, deleted, etc.) remotely|built upon the <u>Remote Procedure Call paradigm (a language independent function call that spans another system)</u>|
+|Actually ReST is more of a style to use HTTP than a separate protocol|while SOAP/WS is a stack of protocols that covers every aspect of using a remote service, from service discovery, to service description, to the actual request/response|
+
+### ReST-based Web Services
+1. What is ReST?  
+Representational State Transfer (ReST) is intended to evoke an image of how a well-designed Web application behaves: a network of web pages (a virtual state-machine), where the user progresses through an application by selecting links (state transitions), resulting in the next page (representing the next state of the application) being transferred to the user and rendered for their use.
+2. How it works?
+    - <img src="./docs/10.png" width="50%" height="50%" />
+    - Client wants to access a service (Amazon) a product and things come back
+        ```
+        1. Clients requests Resource through Identifier (URL)
+        2. Server/proxy sends representation of Resource 
+        3. This puts the client in a certain state. 
+        4. Representation contains URLs allowing navigation.
+        5. Client follows URL to fetch another resource.
+        6. This transitions client into yet another state.
+        7. Representational State Transfer!
+        ```
+4. Resource  
+    is anything that’s important enough to be referenced as a thing in itself.
+    - e.g.: 
+        ```
+        If your users might
+        - want to create a hypertext link to it
+        - make or refute assertions about it
+        - retrieve or cache a representation of it
+        - include all or part of it by reference into another representation
+        - annotate it
+        - or perform other operations on it
+                    ...then you should make it a resource.
+        ```
+3. Resource-Oriented Architecture (ROA) v.s. ReST/WS  
+    is a way of turning a problem into a RESTful web service:   
+    an arrangement of URIs, HTTP, and XML that works like the rest of the Web
+4. ROA procedure
+    ```
+    1. Figure out the data set 
+    2. Split the data set into resources and for each kind of resource 
+    3. Name the resources with URIs 
+    4. Expose a subset of the uniform interface 
+    5. Design the representation(s) accepted from the client 
+    6. Design the representation(s) served to the client 
+    7. Integrate this resource into existing resources, using hypermedia links and forms 
+    8. Consider the typical course of events: what’s supposed to happen? - How would a user interact with it?
+    9. Consider error conditions: what might go wrong?
+    ```
+
+### Not included:
+- ReST Uniform Interface 
+- ReST Best Practice
+- HTTP
+    - errors commonly made
+    - safe, ...
