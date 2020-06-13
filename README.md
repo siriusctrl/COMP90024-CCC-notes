@@ -308,9 +308,9 @@
     - There is one administrator
         - e.g.: Firewall changes, server reconfigurations, services, access control (students/staff/others…)
     - Transport cost is zero - I can send as much data as I like for free
-    - [-- Assumption ends --]
     - The network is homogeneous
     - Time is ubiquitous - Clock is same across all computers in network
+    - [-- Assumption ends --]
     - issues of heterogeneity of compute, data, security from lecture 1
     - Distributed systems are widespread - The Internet
     - Many approaches to design parallel or distributed systems (below)
