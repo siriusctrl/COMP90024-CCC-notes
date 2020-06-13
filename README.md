@@ -1,17 +1,92 @@
 # COMP90024-CCC
 
 ## Week1 - How we got here
-1. Computing and Communication Technologies (r)evolution
-    - from centralised to decentralised
-2. distributed system history
-    - Once upon a time we had standards
-    - Then we had more standards
-    - mid-90s: focused on computer-computer interaction
-    - internet: peer-to-peer
-        - challenge: sharing data between different organizations
-        - soln: grid computing
-        - Grid: only need access to it no matter it is data or super computer the process to move things
-            - problem: people have different ways to do it
+1. What is cloud computing?
+    - In 2013, Cloud computing is a jargon term without a commonly accepted non-ambiguous scientific or technical definition. (Anything that is not on your computer, e.g.: gmail)
+    - In 2016, Proponents claim that cloud computing allows companies to avoid upfront infrastructure costs, and focus on projects that differentiate their businesses instead of on infrastructure. Proponents also claim that cloud computing allows enterprises to get their applications up and running faster, with improved manageability and less maintenance, and enables IT to more rapidly adjust resources to meet fluctuating and unpredictable business demand. Cloud providers typically use a "pay as you go" model. This can lead to unexpectedly high charges if administrators do not adapt to the cloud pricing model. (Everyone has different flavor)
+2. Cloud Characteristics (Lecture notes and then my paraphrasing)
+    - On-demand self-service
+        - A consumer can provision computing capabilities as needed without requiring human   interaction with each service provider. 
+        - Scale computing resources up and down by needs without requiring human interaction with each service provider.
+        - For anyone in any time - infinite availability (key)
+    - Networked access
+        - Capabilities are available over the network and access through standard mechanisms that promote use by heterogeneous client platforms.
+        - Resources can be access through network and adapted to heterogeneous client platforms.
+    - Resource pooling
+        - The provider's computing resources are pooled to serve multiple consumers using a   multi-tenant model potentially with different physical and virtual resources that can be  dynamically assigned and reassigned according to consumer demand. 
+        - Provider’s resources are pooled and can be dynamically assigned and reassigned by need.     
+        - Enough resource to scale up & down
+    - Rapid Elasticity
+        - Capabilities can be elastically provisioned and released, in some cases automatically, to scale rapidly upon  demand.
+        - Capabilities can scale easily and rapidly upon demand.
+    - Measured Service
+        - Cloud systems automatically control and optimize resource use by leveraging a metering  capability at some level of abstraction appropriate to the type of service.
+        - Resourcing optimization by measuring usage
+        - monitor for load balance (e.g.: nigix)
+3. Flavour
+    - Compute clouds
+      - Amazon Elastic compute cloud
+      - Azure
+    - Data Clouds
+      - Amazon Simple Storage Service
+      - Google docs
+      - iCloud
+      - Dropbox
+    - Application Clouds
+      - App store
+      - Virtual image factories
+    - Public(credit card and pay for using) /Private(Unimelb research cloud)/Hybrid(MRC run out of resource nad buy from Amazon)/Mobile/Health Clouds
+    - complexity arise in: decision about what can we move out/what cost ot stay in/who is  allowed this to happen
+4. History - tends in computing
+    1. Computing and Communication Technologies (r)evolution
+        - from centralised to decentralised
+    2. distributed system history
+        - Once upon a time we had standards
+        - Then we had more standards
+        - mid-90s: focused on computer-computer interaction
+        - internet: peer-to-peer
+            - challenge: sharing data between different organizations
+            - soln: grid computing
+            - Grid: only need access to it no matter it is data or super computer the process to move things
+                - problem: people have different ways to do it
+    - Distributed System
+        - <u>**Transparency**</u> and **<u>heterogeneity</u>** in computer-computer interactions
+        - Finding resources -> Binding resources -> run time type checking -> invoking resources
+        - Dealing with heterogeneous of system
+        - Challenges
+            - Complexity of implementations
+            - Vendor specific solutions
+            - Scalability problem
+            - Sharing data between different organizations  
+    - Grid Computing
+        - From computer-computer focus to organisation-organisation focus
+        - Can be thought of as a distributed system with non-interactive workloads.
+        - It is in contrast to the traditional notion of a supercomputer, which has many processors connected by a local high-speed computer bus instead of Ethernet.
+        - Grid computing is distinguished from conventional high-performance computing systems such as cluster computing in that grid computers have each node set to perform a different task/application. Grid computers also tend to be more heterogeneous and geographically dispersed (thus not physically coupled) than cluster computers.
+        - Although a single grid can be dedicated to a particular application, commonly a grid is used for a variety of purposes. Grids are often constructed with general-purpose grid middleware software libraries. Grid sizes can be quite large.
+        - Challenge
+            - What resources are available
+            - To determine the status of resources
+            - Job scheduling
+            - Virtual organization support
+            - Security
+                - Public key infrastructure
+    
+5. Comparison between Grid/Cluster/Cloud Computing
+    ```
+    Clusters "tend" to be tightly coupled, e.g. a bunch of servers in a rack with high speed interconnects - we'll go into some details of this in week 3;  
+    Grid is/was more loosely coupled resources that provided single sign-on access to distributed resources that are often hosted by different organisations;  
+    Cloud = we'll get to that soon! ;o)
+    ```
+    - Grid computing
+        - Refer to the top
+    - Cluster Computing
+        - Clusters tend to be tightly coupled, e.g. a bunch of servers in a rack with high speed interconnects
+        - Example
+            - Super computer
+    - Cloud Computing
+        - Refer to week 5
+        - Cloud computing is a model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing resources(networks, servers, storage, applications, services) that can be rapidly provisioned and released with minimal management effort or service provider interaction.
 
 
 ## Week2 - Domain Drivers – tour of some big data projects
@@ -25,6 +100,21 @@
             - Have more processors
             - adv: 
                 - 1) Easy to **add more** (more cores or cluster of nodes)
+                    - add more = 
+                        - Single machine multiple cores
+                            - Typical laptop/PC/server these days
+                        - Loosely coupled collection/cluster of machines
+                            - Polling/sharing of resources
+                            - Dedicated vs available only when not in use by others
+                        - Tightly coupled cluster of machines
+                            - Typical HPC/HTC set-up (SPARTAN)
+                            - Which many servers in same room, often with fast message passing interconnects
+                        - Widely distributed clusters of machines
+                            - UK NGS, EGEE
+                        - Hybrid combination of the above
+                            - Leads to many challenges with distributed systems
+                            - Shared state
+                            - Delayed and lost in message passing
                 - 2) cost increase not so much
             - disadv: 
                 - 1) **add more** limition (see week3 - Amdahl's law)
@@ -50,61 +140,239 @@
     - social
     - geographical
     - Genome
-
-## interesting discussion
-- [difference between grid, cluster and cloud computing](https://canvas.lms.unimelb.edu.au/courses/17514/discussion_topics/139892)
+5. challenges are shaping the technological landscape
+    - Challenges happen in multiple perspectives in research domains. - Big data - Big compute - Big distribution - Big collaboration - Big security
+    - Tools, technologies and methodologies have been/can/are evolving to tackle these challenges
+        - That there is a huge amount of work still to be done 
+        - Domain knowledge is also required
 
 ## Week3 - Overview of Distributed and Parallel Computing Systems
-1. Amdahl's law
-    - Goal: If n processors (cores) are thrown at a problem how much faster will it go?
+1. Question: If n processors (cores) are thrown at a problem how much faster will it go?
     - Some terminology:
         - <img src="./docs/1.png" width="50%" height="50%" />
-    - <img src="./docs/2.jpg" width="60%" height="50%" />
-2. Gustafson-Barsis's Law
-    - speedup is a linear formula dependent on the number of processes and the fraction of time to run sequential parts
-    - <img src="./docs/3.jpg" width="60%" height="50%" />
-    - Faster (more parallel) equipment available, larger problems can be solved in the same time.
-3. Parallelisation Paradigms
-    - Master-Worker 
-        - Master decomposes the problem into small tasks
-        - distributes to workers and gathers partial results to produce the result
-        - <img src="./docs/4.jpg" width="20%" height="50%" />
-    - Divide and Conquer
-        - 1) A problem is divided into two or more sub problems
-        - 2) each of these sub problems are solved independently
-        - 3) their results are combined
-        - 3 operations: split, compute, and join
-        - Master-worker/task-farming is like divide and conquer with master doing both split and join operation
-        - <img src="./docs/7.jpg" width="20%" height="50%" />
-    - Single-Program Multiple-Data (SPMD)
-        - Each process executes the same piece of code, but on different parts of the data
-        - Data is typically split among the available processors
-        - Commonly exploited model: MapReduce
-        - <img src="./docs/5.jpg" width="20%" height="50%" />
-    - Pipelining 
-        - Suitable for applications involving multiple stages of execution
-        - typically operate on large number of data sets.
-        - <img src="./docs/6.jpg" width="20%" height="50%" />
-    - Speculation
-        - Used when it is quite difficult to achieve parallelism through the previous paradigms
-        - use "look ahead" execution
-        - prcedure: 
-            - Consider a (long running) producer P and a consumer C such that C depends on P for the value of some variable V. If the value of V is *predictable*, we can execute C speculatively using a predicted value in parallel with P.
-                - If the prediction turns out to be correct, we gain performance since C doesn’t wait for P anymore. 
-                - If the prediction is incorrect (which we can find out when P completes), we have to take corrective action, cancel C and restart C with the right value of V again. 
-    - Parametric Computation
-        - not discussed?
-4. Erroneous Assumptions of Distributed Systems
+        - Proportion of speed up depends on parts of program that cannot be parallelised
+    1. Amdahl's law
+        - assumes a fixed problem size – sometimes can’t predict length of time required for jobs, 
+            - e.g. state space exploration or differential equations that don’t solve
+        - <img src="./docs/2.jpg" width="60%" height="50%" />
+        - That is, if 95% of the program can be parallelized, the theoretical maximum speedup using parallel computing would be 20 times, no matter how many processors are used.
+        - If the non-parallelisable part takes 1H, then no matter how many cores are used, it won’t complete in < 1H
+        - Amdahl’s Law greatly simplifies the real world
+    2. Gustafson-Barsis's Law
+        - speedup is a linear formula dependent on the number of processes and the fraction of time to run sequential parts
+        - <img src="./docs/3.jpg" width="60%" height="50%" />
+        - Faster (more parallel) equipment available, larger problems can be solved in the same time.
+    3. comparison
+        - Amdahl’s Law suggests that with limited task, speed up could not be too fast. 
+        - Gustafson-Barsis’s Law suggests that with enough processors and remaining tasks, speed up will always meet the requirement.
+3. Computer Architecture
+    - At the simplest level a computer comprises:
+        - CPU for executing programs
+        - Memory that stores/executing programs and related data
+        - I/O systems
+            - keyboards, networks
+        - Permanent storage for read/writing data into out of memory
+        - HPC needs to keep balance of these
+            - Based on the problem needs to be solved
+    - There are many different ways to design/architect computers
+        - different flavours suitable to different problems (below)
+            |               | Simple Instruction | Multiple Instruction |
+            | ------------- | ------------------ | -------------------- |
+            | Single Data   | SISD               | MISD                 |
+            | Multiple Data | SIMD               | MIMD                 |
+            - Single Instruction, Single Data Stream (SISD)
+              - Sequential computer which exploits no parallelism in either the instruction of data streams
+              - Single control unit fetches single instruction stream from memory. The CU/CPU then generates appropriate control signals to direct single processing element to operate on single Data Stream, i.e. one operation at a time.
+              - Example
+                - von Neumann computer
+            - Multiple Instruction, Single Data stream (MISD)
+              - <u>**Parallel**</u> computing architecture where many functional units (PU/CPU) perform different operations on the same data
+              - Example 
+                - fault tolerant computer architectures: multiple error checking on the same date source
+            - Single Instruction, Multiple Data Stream (SIMD)
+              - Multiple processing elements that perform the same operation on multiple data points simultaneously
+              - Focusing on data level parallelism: many parallel computations, but only a single process (instruction) at a given moment (<u>**Concurrency**</u>)
+              - Example
+                - to improve performance of multimedia use such as for image processing
+            - Multiple Instruction, Multiple Data stream (MIMD)
+              - Number of processors that function **asynchronously** and independently.
+              - at any time, different processors may be executing different instructions on different pieces of data
+              - Machines can be shared memory or distributed memory categories.
+                - Depends on how MIMD processors access memory
+              - Example
+                - HPC
+3. Approaches for Parallelism (Where and how)
+    - Explicit vs Implicit Parallelisation
+        - Implicit Parallelism
+            - **<u>Compiler</u>** is responsible for identifying parallelism and scheduling of calculations and the placement of data
+            - Disadv: Pretty hard to do
+        - Explicit Parallelisation
+            - **<u>Programmer</u>** is responsible for most of the parallelization effort
+    - Hardware
+        - Hardware Parallelisation
+            - **Cache**: much faster than reading/writing to main memory; instruction cache, data cache (multi-level) and translation lookaside buffer used for virtual-physical address translation (more later on Cloud and hypervisors). 
+            - **Add CPU (parallelisation)**: Parallelisation by adding extra CPU to allow more instructions to be processed per cycle. Usually shares arithmetic units. 
+                - Disadv: Heavy use of one type of computation can tie up all the available units of the CPU preventing other threads from using them.
+            - **Multiple cores**: Multiple cores that can process data and perform computational tasks in parallel.
+                - Disadv: Typically share same cache, but issue of cache read/write performance and cache coherence. 
+                - Disadv: Possibility of cache stalls (CPU not doing anything whilst waiting for caching)
+                    - To address the issue that CPU not doing anything whilst waiting for caching. Many chips have mixture cache L1 for single core, L2 for pair cores and L3 shared with all cores.
+                - Disadv: typical to have different cache speeds and cache sizes (higher hit rates but potentially higher latency). 
+        - Symmetric Multiprocessing (SMP)
+            - Two (or more) identical processors connected to a single, shared main memory, with full access to all I/O devices, controlled by a single OS instance that treats all processors equally. Each processor executes different programs and works on different data but with capability of sharing common resources (memory, I/O device, …). Processors can be connected in a variety of ways: buses, crossbar switches, meshes.  
+                - Disadv: More complex to program since need to program both for CPU and inter-processor communication (bus).
+        - Non-Uniform Memory Access (NUMA)
+            - provides speed-up by allowing a processor to access its own local memory faster than non-local memory.
+                - Disadv: Improved performance as long as data are localized to specific processes/processors. 
+                - Key is allocating memory/processors in NUMA friendly ways, 
+                    - e.g. to avoid scheduling/locking and (expensive) inter-processor communication. Approaches such as ccNUMA with range of cache coherency protocols/products. 
+    - Operating System
+      - parallel vs interleaved semantics 
+        - Most modern multi-core operating systems support different "forms" of parallelisation
+        - e.g.: A || B vs A ||| B
+      - Compute parallelism
+        - Processes
+          - Used to realize tasks, structure activities
+        - Theads
+          - Native threads
+            - Fork, Spawn, Join
+          - Green threads
+            - Scheduled by a VM instead of natively by the OS
+      - Data parallelism
+        - Caching
+    - Software/Applications
+      - Programming language supports a range of parallelisation/concurrency features
+        - Threads, thread pools, locks, semaphores ...
+      - Programming languages developed specifically for parallel/concurrent systems
+      - Key issues:
+        - Deadlock
+          - Processes involved constantly waiting for each other
+        - LiveLock
+          - Process constantly change with regard to one another, but none are progressing
+    - Message Passing Interface (MPI)
+        - Widely adopted approach for message passing in parallel systems
+        - Supports point-point, broadcast communications
+        - Key MPI functions
+            - ```
+                MPI_Init	:initiate MPI computation
+                MPI_Finalize	:terminate computation
+                MPI_COMM_SIZE	:determine number of processors
+                MPI_COMM_RANK	:determine my process identifier
+                MPI_SEND	:send a message
+                MPI_RECV	:receive a message
+                ```
+        - Adv: 
+            - Standardised, widely adopted, portable, performant
+            - Parallelisation = users problem (user controll how to parallel)
+    - (HT) Condor
+        - A specialized workload management system for compute-intensive jobs developed at University of Wisconsin
+        - Adv:
+            - Offers job queueing mechanisms, scheduling policies, priority schemes, resource monitoring/management
+            - User submits jobs to Condor and it chooses when and where to run the jobs, monitors their progress, and informs the user upon completion 
+            - Allows to harvest “free” (?) CPU power from otherwise idle desktop workstations
+                - e.g. use desktop machines when keyboard and mouse are idle 
+                    - key press detected checkpoint and migrate a job to a different (idle) machine 
+            - No need for shared file system across machines
+                - Data can be staged to machines as/when needed
+            - Can work across organisational boundaries
+                - Condor Flocking
+            - ClassAds
+                - Advertise resources and accept jobs (according to policy)
+    - Data Parallelism Approaches (week 9)
+        - Challenges of big data
+            - The most important kind of parallelism challenge?
+        - Distributed data
+            - CAP Theorem: Consistency, Availability, Partition tolerance
+            - ACID <-> BASE
+        - Distributed File Systems 
+            - e.g. Hadoop, Lustre, Ceph…
+4. Erroneous Assumptions of Distributed Systems (detail see slides)
+    - Challenges with Distribution 
+        - "A distributed system is one in which the failure of a computer you didn't even know existed can render your own computer unusable" by Leslie Lamport
     - The network is reliable
     - Latency is zero
     - Bandwidth is infinite - I can send any amount of data I wish between any nodes
     - The network is secure
+        - People sending data to my services
+            - Repeated password attempts, SQL injections, …!?
+        - People actively attacking me
+            - Distributed denial of service attacks
+        - People reading the data sent over the network
+            - Man in the middle attacks
+        - People masquerading as one of my nodes
+            - Spoofing 
+        - People breaking into one of my nodes
+            - Trojans, viruses, brute force attacks, …
+        - People stealing the physical hardware
     - Topology doesn't change - Node x is always there
     - There is one administrator
         - e.g.: Firewall changes, server reconfigurations, services, access control (students/staff/others…)
     - Transport cost is zero - I can send as much data as I like for free
+    - [-- Assumption ends --]
     - The network is homogeneous
     - Time is ubiquitous - Clock is same across all computers in network
+    - issues of heterogeneity of compute, data, security from lecture 1
+    - Distributed systems are widespread - The Internet
+    - Many approaches to design parallel or distributed systems (below)
+        - No single algorithm
+        - No single technical solution
+        - Eco-system of approaches explored over time and many open research questions/challenges
+        - Flavour of some of these…
+5. Strategies for Development of Parallel/Distributed Systems
+    - strategies: (detail see slides)
+        - Automatic parallelization
+        - Parallel libraries
+        - Major recording
+    - Challenges:
+        - dependence analysis is hard for code that uses pointers, recursion, …; 
+        - loops can have unknown number of iterations; 
+        - access to global resources, e.g. shared variables
+6. Design Stages of Parallel Programs
+    - Partitioning
+        - Decomposition of computational activities and data into smaller tasks 
+        - Numerous Pprallelisation paradigms:
+            - Master-Worker/task-farming
+                - Master decomposes the problem into small tasks
+                - distributes to workers and gathers partial results to produce the result
+                - Master-worker/task-farming is like divide and conquer with master doing both split and join operation
+                - <img src="./docs/4.jpg" width="20%" height="50%" />
+            - Divide and Conquer
+                - 1) A problem is divided into two or more sub problems
+                - 2) each of these sub problems are solved independently
+                - 3) their results are combined
+                - 3 operations: split, compute, and join
+                - Master-worker/task-farming is like divide and conquer with master doing both split and join operation
+                - <img src="./docs/7.jpg" width="20%" height="50%" />
+            - Single-Program Multiple-Data (SPMD)
+                - Each process executes the same piece of code, but on different parts of the data
+                - Data is typically split among the available processors
+                - Data splitting and analysis can be done in many ways
+                - Commonly exploited model: MapReduce
+                - <img src="./docs/5.jpg" width="20%" height="50%" />
+            - Pipelining 
+                - Suitable for applications involving multiple stages of execution
+                - typically operate on large number of data sets.
+                - <img src="./docs/6.jpg" width="30%" height="50%" />
+            - Speculation
+                - Used when it is quite difficult to achieve parallelism through the previous paradigms
+                - use "look ahead" execution
+                    - Like look ahead, if the data is predictable, we could use the predicted data to do the following action while waiting for data.
+                    - If the prediction is incorrect, we have to take corrective action.
+                - procedure: 
+                    - Consider a (long running) producer P and a consumer C such that C depends on P for the value of some variable V. If the value of V is *predictable*, we can execute C speculatively using a predicted value in parallel with P.
+                        - If the prediction turns out to be correct, we gain performance since C doesn’t wait for P anymore. 
+                        - If the prediction is incorrect (which we can find out when P completes), we have to take corrective action, cancel C and restart C with the right value of V again. 
+            - Parametric Computation
+                - not discussed?
+        -  Communication (relates with MPI)
+            - Flow of information and coordination among tasks that are created in the partition stage
+        -  Agglomeration
+            - (performance measuring) Tasks and communication created in above stages are evaluated for performance and implementation cost
+            - Tasks may be grouped into larger tasks to improve communication
+            - Individual communications can be bundled
+        -  Mapping/Scheduling
+            - (design to be able to scale up/down) Assign tasks to processors such that job completion time is minimized and resource utilization is maximized
+
 
 ## Week5 - Cloud Computing & ~~Getting to Grips with the University of Melbourne Research Cloud~~
 Cloud computing is a model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing resources (e.g., networks, servers, storage, applications, and services) <u>that can be rapidly provisioned and released with minimal management effort or service provider interaction</u> 可以通过最少的管理工作或服务提供者交互从而可以快速地配置和发布
