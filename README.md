@@ -373,6 +373,40 @@
         -  Mapping/Scheduling
             - (design to be able to scale up/down) Assign tasks to processors such that job completion time is minimized and resource utilization is maximized
 
+## Week4 - The Spartan HPC System
+- Some background on supercomputing, high performance computing, parallel computing, research computing (they're not the same thing!).
+    - Supercomputer
+        - Any single computer system that has exceptional processing power for its time.
+    - Clustered computing
+        - is when two or more computers serve a single resource 
+            - e.g.: A collection of smaller computers strapped together with a high-speed local network
+        - Adv: improves performance and provides redundancy;
+    - HPC - high performance computing
+        - It is any computer system whose architecture allows for above average performance
+        - The clustered HPC is the most efficient, economical, and scalable method, and for that reason it **dominates supercomputing**.
+    - Parallel and Research Programming
+        - Parallel computing refers to the submission of jobs or processes over multiple processors and by splitting up the data or tasks between them
+            - With a cluster architecture, applications can be more easily parallelised across them.
+        - Research computing is the software applications used by a research community to aid research.
+            - challenge: This skills gap is a major problem and must be addressed because as the volume, velocity, and variety of datasets increases then researchers will need to be able to process this data.
+2. Flynn’s Taxonomy and Multicore System
+    - Over time computing systems have moved towards multi-processor, multi-core, and often multi-threaded and multi-node systems.
+    - As computing technology has moved increasingly to the MIMD taxonomic classification additional categories have been added:
+        - Single program, multiple data streams (SPMD)
+        - Multiple program, multiple data streams (MPMD)
+3. Things are more important than performance
+    - Correctness of code and signal
+    - Clarity of code and architecture
+    - Reliability of code and equipment
+    - Modularity of code and components
+    - Readability of code and hardware documentation
+    - Compatibility of code and hardware
+- Why performance and scale matters, and why it should matter to you.
+- An introduction to Spartan, University of Melbourne's HPC/cloud hybrid system
+- Logging in, help, and environment modules.
+- Job submission with Slurm workload manager; simple submissions, multicore, multi-node, job arrays, job dependencies, interactive jobs.
+- Parallel programming with shared memory and threads (OpenMP) and distributed memory and message passing (OpenMPI)
+- Tantalising hints about more advanced material on message passing routines.
 
 ## Week5 - Cloud Computing & ~~Getting to Grips with the University of Melbourne Research Cloud~~
 Cloud computing is a model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing resources (e.g., networks, servers, storage, applications, and services) <u>that can be rapidly provisioned and released with minimal management effort or service provider interaction</u> 可以通过最少的管理工作或服务提供者交互从而可以快速地配置和发布
@@ -386,12 +420,49 @@ Cloud computing is a model for enabling ubiquitous, convenient, on-demand networ
     |example| | | | Eucalyptus, VMWare vCloud Hybrid Service|
 
 2. Delivery Models
-- <img src="./docs/9.jpg" width="70%" height="50%" />
-    
+- responsibilities:
+    - <img src="./docs/9.jpg" width="70%" height="50%" />
+-
     | | Iaas| Paas|Saas|
     |---|---|---|---|
     | example| Amazon Web Services<br>Oracle Public Cloud<br>NeCTAR| Azure| Gmail|
 
+## Workshop week5: Auto-Deployment -- Ansible
+- Reason for auto-deployment (**comparison**)
+  - We are easy to forget what software we installed, and what steps we took to configure the system
+  - Manual process is error-prone, can be non-repeatable
+  - Snapshots are monolithic
+    - provide no record of what has changed
+  - Manual deployment provides no record of what has changed
+- Automation is the mechanism used to make servers reach a desirable state.
+  - Automation provides (**advantages**)
+    - A record of what you did
+    - Knowledge about the system in code
+    - Making the process repeatable
+    - Making the process programmable
+    - Infrastructure as Code
+- Configuration management (CM) tools
+    - Configuration management refers to the process of systematically handling changes to a system in a way that it maintains integrity over time.
+- Ansible is an automation tool for configuring and managing computers.
+  - Features about ansible (Pros)
+    - Easy to learn
+      - Playbooks in YAML, templates in Jinja2
+      - Sequential execution
+    - Minimal requirements
+      - No need for centralized management servers/daemons
+      - Single command to install
+      - Using SSH to connect to target machine
+    - Idempotent
+      - Executing N times no different to executing once
+      - Prevents side-effects from re-running scripts
+    - Extensible
+      - Write you own modules
+    - Rolling updates
+      - Useful for continuous deployment/zero downtime deployment
+    - Inventory management
+      - Dynamic inventory from external data sources
+      - Execute tasks against host patterns
+    - Ansible Vault for encryption
 
 ## Week 6 – Web Services, ReST Services ~~and Twitter demo~~
 
@@ -449,12 +520,22 @@ Cloud computing is a model for enabling ubiquitous, convenient, on-demand networ
     - SDMX (Statistical Data Markup eXchange)
         - approach the statistical data around the world
 3. SOAP/WS v.s. ReST  
-    SOAP(Simple Object Access Protocol)
+    SOAP (Simple Object Access Protocol)
 
     |ReST|SOAP/WS|
     |---|---|
     is centered around resources, and the way they can be manipulated (added, deleted, etc.) remotely|built upon the <u>Remote Procedure Call paradigm (a language independent function call that spans another system)</u>|
     |Actually ReST is more of a style to use HTTP than a separate protocol|while SOAP/WS is a stack of protocols that covers every aspect of using a remote service, from service discovery, to service description, to the actual request/response|
+4. How to describes the functionality offered by a web service?
+    - WSDL: is an XML-based interface description language that describes the functionality offered by a web service.
+    - WSDL provides a machine-readable description of how the service can be called, what parameters it expects, and what results/data structures it returns:
+        - Definition – what it does 
+        - Target Namespace – context for naming things
+        - Data Types – simple/complex data structures inputs/outputs
+        - Messages – messages and structures exchanged between client and server
+        - Port Type - encapsulate input/output messages into one logical operation
+        - Bindings - bind the operation to the particular port type
+        - Service - name given to the web service itself
 
 ### ReST-based Web Services
 1. What is ReST?  
@@ -471,8 +552,54 @@ Representational State Transfer (ReST) is intended to evoke an image of how a we
         6. This transitions client into yet another state.
         7. Representational State Transfer!
         ```
+3. ReST Best Practices (principle)
+    - Keep your URIs short – and create URIs that don’t change.
+    - URIs should be opaque identifiers that are meant to be discovered by following hyperlinks, not constructed by the client.
+    - Use nouns, not verbs in URLs
+    - Make all HTTP GETs side-effect free.  Doing so makes the request "safe".
+    - Use links in your responses to requests!  Doing so connects your response with other data.  It enables client applications to be "self-propelled".  That is, the response itself contains info about "what's the next step to take".  Contrast this to responses that do not contain links.  Thus, the decision of "what's the next step to take" must be made out-of-band.
+    - Minimize the use of query strings.  
+        - For example:
+            - Prefer: http://www.amazon.com/products/AXFC
+            - Over: http://www.amazon.com/products?product-id=AXFC
+    - Use HTTP status codes to convey errors/success
+    - In general, keep the REST principles in mind. 
+        - In particular:
+            - Addressability (discussed above about address design)
+            - Uniform Interface (below)
+            - Resources and Representations instead of RPC (below Resource section)
+            - HATEOAS (below)
+4. ReST – Uniform Interface
+    - Uniform Interface has four more constrains:
+        - Identification of Resources
+            - All important resources are identified by one (uniform) resource identifier mechanism (e.g. HTTP URL)
+        - Manipulation of Resources through representations
+            - Each resource can have one or more representations. Such as application/xml, application/json, text/html, etc. Clients and servers negotiate to select representation.
+        - Self-descriptive messages
+            - Requests and responses contain not only data but additional headers describing how the content should be handled.
+            - (HTTP GET, HEAD, OPTIONS, PUT, POST, DELETE, CONNECTION, TRACE, PATCH): eneryone knows what these means, no need to google the document (one advantage over SOAP)
+        - HATEOAS: Hyper Media as the Engine of Application State
+            - Resource representations contain links to identified resources
+            - Resources and state can be used by navigating links
+                - links make interconnected resources navigable
+                - without navigation, identifying new resources is service-specific
+            - RESTful applications **<u>navigate</u>** instead of **<u>calling</u>**
+                - Representations contain information about possible traversals
+                - application navigates to the next resource depending on link semantics
+                - navigation can be delegated since all links use identifiers
+            - Making Resources Navigable
+                - RPC-oriented systems need to expose the available functions
+                    - functions are essential for interacting with a service
+                    - introspection or interface descriptions make functions discoverable
+                - ReSTful systems use a Uniform Interface
+                    - no need to learn about functions
+                    - To find resources
+                        - find them by following links from other resources
+                        - learn about them by using URI Templates
+                        - understand them by recognizing representations
+
 4. Resource  
-    is anything that’s important enough to be referenced as a thing in itself.
+    - is anything that’s important enough to be referenced as a thing in itself.
     - e.g.: 
         ```
         If your users might
@@ -484,28 +611,169 @@ Representational State Transfer (ReST) is intended to evoke an image of how a we
         - or perform other operations on it
                     ...then you should make it a resource.
         ```
-3. Resource-Oriented Architecture (ROA) v.s. ReST/WS  
-    is a way of turning a problem into a RESTful web service:   
+3. Resource-Oriented Architecture (ROA)
+    - what is it?
+        - is a way of turning a problem into a RESTful web service:   
     an arrangement of URIs, HTTP, and XML that works like the rest of the Web
-4. ROA procedure
-    ```
-    1. Figure out the data set 
-    2. Split the data set into resources and for each kind of resource 
-    3. Name the resources with URIs 
-    4. Expose a subset of the uniform interface 
-    5. Design the representation(s) accepted from the client 
-    6. Design the representation(s) served to the client 
-    7. Integrate this resource into existing resources, using hypermedia links and forms 
-    8. Consider the typical course of events: what’s supposed to happen? - How would a user interact with it?
-    9. Consider error conditions: what might go wrong?
-    ```
+    - ROA procedure
+        - ```
+            1. Figure out the data set 
+            2. Split the data set into resources and for each kind of resource 
+            3. Name the resources with URIs 
+            4. Expose a subset of the uniform interface 
+            5. Design the representation(s) accepted from the client 
+            6. Design the representation(s) served to the client 
+            7. Integrate this resource into existing resources, using hypermedia links and forms 
+            8. Consider the typical course of events: what’s supposed to happen? - How would a user interact with it?
+            9. Consider error conditions: what might go wrong?
+            ```
+    -  ROA actions
+        - |      Action       |               HTTP METHOD                |
+            | :---------------: | :--------------------------------------: |
+            |  Create Resource  | PUT to a new URI POST to an existing URI |
+            | Retrieve Resource |                   GET                    |
+            |  Update Resource  |         POST to an existing URI          |
+            |  Delete Resource  |                  DELETE                  |
+        - Don't mapping PUT to Update and POST to create
+            - **PUT** should be used when target resource URL is known by the client.
+            - **POST** should be used when target resource URL is server generated
+7. HTTP Methods can be 
+    - **Safe**
+        - Do not change, repeating a call is equivalent to not making a call at all 
+        - GET , OPTION, HEAD
+    -  **Idempotent**
+        - Effect of repeating a call is equivalent to making a single call; if not can has side-effects
+        - *PUT*, *DELETE*
+    - **Neither**
+        - POST
 
-### Not included:
-- ReST Uniform Interface 
-- ReST Best Practice
-- HTTP
-    - errors commonly made
-    - safe, ...
+## Workshop week6: Containerization and docker
+### Virtualization vs Containerization
+- Virtualization
+  - Pros
+    - Application containment
+    - Horizontal scalability
+  - Cons
+    - The guest OS and binaries can give rise to duplications between VMs wasting server processors, memory and disk space and limiting the number of VMs each server can support -> virtualization overhead
+- Containerization
+  - Pros
+    - It allows virtual instances to share a single host OS (and associated drivers, binaries, libraries) to reduce these wasted resources since each container only holds the application and related binaries. The rest are shared among the containers.
+- |Parameter | Virtual Machines                                             | Container                                     |
+  | ------------- | ------------------------------------------------------------ | --------------------------------------------- |
+  | Guest OS      | Run on virtual Hardware, have their own OS kernels           | Share same OS kernel                          |
+  | Communication | Through Ethernet devices                                     | IPC mechanisms (pipes, sockets)               |
+  | Security      | Depends on the Hypervisor                                    | Requires close scrutiny                       |
+  | Performance   | Small overhead incurs when instructions are translated from guest to host OS | Near native performance                       |
+  | Isolation     | File systems and libraries are not shared between guest and host OS | File systems can be shared, and libraries are |
+  | Startup time  | Slow (minutes)                                               | Fast (a few seconds)                          |
+  | Storage       | Large                                                        | Small (most are reusable)                     |
+
+- In real world they can co-exist
+  - When deploying applications on the cloud, the base computation unit is a Virtual Machine. Usually Docker containers are deployed on top of VMs.
+- Containers not always better
+  - It depends on: 
+    - The size of the task on hand
+    - The life span of the application
+    - Security concerns
+    - Host operation system
+
+### What is Container?
+- Similar concept of resources isolation and allocation as a virtual machine
+- Without bundling the entire hardware environment and full OS
+- What container runtimes are in use?
+  - Docker
+    - The leading software container platform
+  - Containerd
+  - cri-o
+  
+### Docker
+  - What is it?
+    - the most successful containerization technology.
+  - Docker Nomenclature
+    - Container: a process that behaves like an independent machine, it is a runtime instance of a docker image.
+    - Image: a blueprint for a container.
+    - Dockerfile: the recipe to create an image.
+    - Registry: a hosted service containing repositories of images. E.g., the Docker Hub (https://hub.docker.com)
+    - Repository: is a sets of Docker images.
+    - Tag: a label applied to a Docker image in a repository.
+    - Docker Compose: Compose is a tool for defining and running multi-containers Docker applications. 
+    - Docker SWARM: a standalone native clustering / orchestration tool for Docker.
+  - Manage Data in Docker
+    - By default, data inside a Docker container won’t be persisted when a container is no longer exist.
+    - You can copy data in and out of a container.
+    - Docker has two options for containers to store files on the host machine, so that the files are persisted even after the container stops.
+      - Docker volumes (Managed by Docker, /var/lib/docker/volume/)
+      - Bind mounts (Managed by user, any where on the file system)
+  - different networking options
+    - host: every container uses the host network stack; which means all containers share the same IP  address, hence ports cannot be shared across containers
+    - bridge: containers can re-use the same port, as  they have different IP addresses, and expose a port of their own  that belongs to the hosts, allowing the containers to be somewhat visible from the outside.
+
+### Dockerfile
+  - ```
+    FROM nginx:latest
+
+    ENV WELCOME_STRING "nginx in Docker"
+
+    WORKDIR /usr/share/nginx/html
+
+    COPY ["./entrypoint.sh", "/"]
+
+    RUN cp index.html index_backup.html; \
+            chmod +x /entrypoint.sh; \
+            apt-get update && apt-get install -qy vim
+    # above run at build time
+    # below run at start up
+
+    ENTRYPOINT ["/entrypoint.sh"]
+    CMD ["nginx", "-g", "daemon off;"]
+    ```
+  - ENTRYPOINT
+    - ENTRYPOINT gets executed when the container starts. CMD specifies arguments that will be fed to the ENTRYPOINT.
+    - Unless it is overridden, ENTRYPOINT will always be executed.
+
+
+
+### What are Orchestration Tools?
+- Container orchestration technologies provides a framework for integrating and managing containers **<u>at scale</u>**
+- Goals
+  - Simplify container management process
+  - Help to manage availability and scaling of containers
+- Features
+  - Networking
+  - Scaling
+  - Service discovery and load balancing
+  - Health check and self-healing
+  - Security
+  - Rolling update
+- Tools
+  - Kubernetes and Hosted Kubernetes
+  - Docker SWARM / Docker Compose
+  - OpenShift
+
+### Docker SWARM
+- What is Docker SWARM (the correct name: Docker in SWARM mode)? 
+  - It is a Docker orchestration tool.
+- Why Docker SWARM?
+  - Hundreds of  containers to manage?
+  - Scalability
+  - Self-healing
+  - Rolling updates
+- Features
+  - Raft consensus group
+    - consists of internal distributed state store and all manager nodes. 
+  - Internal Distributed State Store
+    - built-in key-value store of Docker Swarm mode.
+  - Manager Node 
+    - It conducts orchestration and management tasks. Docker Swarm mode allows multiple manager nodes in a cluster. However, only one of the manager nodes can be selected as a leader. 
+  - Worker Node 
+    - receives and executes tasks directly from the manager node
+  - Node Availability
+    - In Docker Swarm mode, all nodes with ACTIVE availability can be assigned new tasks, even the manager node can assign itself new tasks (unless it is in DRAIN mode)
+  - Service 
+    - consists of one or more replica tasks which are specified by users when first creating the service.
+  - Task
+    - A task in Docker Swarm mode refers to the combination of a single docker container and commands of how it will be run. 
+
 
 ## Week 7 – Big Data and CouchDB
 ### "Big data" challenges and architectures
