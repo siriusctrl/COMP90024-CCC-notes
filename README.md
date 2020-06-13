@@ -793,18 +793,23 @@ Representational State Transfer (ReST) is intended to evoke an image of how a we
     - While there is nothing preventing SQL to be used in distributed environments, alternative query languages have been used for distributed databases, hence they are sometimes called NoSQL DBMSs
 
 3. DBMSs for Distributed Environments
-
-    |||
-    |---|---|
-    |key-value store|is a DBMS that allows the retrieval of a chunk of data given a key: **fast, but crude** (e.g. Redis, PostgreSQL Hstore, Berkeley DB)
-    |BigTable DBMS store|data in columns grouped into column families, with rows potentially containing different columns of the same family (e.g. Apache Cassandra, Apache Accumulo) for **quick retrive**
-    |Document-oriented DBMS store|data as structured documents, usually expressed as XML or JSON (e.g. Apache CouchDB, MongoDB)
-
+    - |||e.g.|
+        |---|---|---|
+        |key-value store|is a DBMS that allows the retrieval of a chunk of data given a key: **fast, but crude**|(e.g. Redis, PostgreSQL Hstore, Berkeley DB)
+        |BigTable DBMS store|data in columns grouped into column families, with rows potentially containing different columns of the same family for **quick retrive**|(e.g. Apache Cassandra, Apache Accumulo) 
+        |Document-oriented DBMS store|- data as structured documents, usually expressed as XML or JSON<br/>- Document-oriented databases are one of the main categories of NoSQL databases|(e.g. Apache CouchDB, MongoDB)
+        |NoSQL DBMSs|While there is nothing preventing SQL to be used in distributed environments, alternative query languages have been used for distributed databases, hence they are sometimes called NoSQL DBMSs|
     - Why Document-oriented DBMS for Big data?
-    While Relational DBMSs are extremely good for ensuring consistency and availability, the normalization that lies at the heart of a relational database model implies fine-grained data, which are less conducive to partition-tolerance than coarse-grained data.
-        - Example:
-            -  A typical contact database in a relational data model may include: a person table, a telephone table, an email table and an address table, all relate to each other.
-            -  The same database in a document-oriented database would entail one document type only, with telephones numbers, email addresses, etc., nested as arrays in the same document.
+        - While Relational DBMSs are extremely good for ensuring consistency and availability, the normalization that lies at the heart of a relational database model implies fine-grained data, which are less conducive to partition-tolerance than coarse-grained data.
+            - Example:
+                -  A typical contact database in a relational data model may include: a person table, a telephone table, an email table and an address table, all relate to each other.
+                -  The same database in a document-oriented database would entail one document type only, with telephones numbers, email addresses, etc., nested as arrays in the same document.
+        - While Relational DBMSs are extremely good at ensuring consistency, they rely on normalized data models that, in a world of big data (think about Veracity and Variety) can no longer be taken for granted.
+            - Therefore, it makes sense to use DBMSs that are built upon data models that are not relational (relational model: tables and relationships amongst tables).
+        - While there is nothing preventing SQL to be used in distributed environments, alternative query languages have been used for distributed databases, hence they are sometimes called NoSQL DBMSs
+        - Relational database finds it challenging to handle such huge data volumes. To address this, RDBMS added more central processing units (or CPUs) or more memory to the database management system to scale up vertically
+        - The majority of the data comes in a semi-structured or unstructured format from social media, audio, video, texts, and emails.
+        - Big data is generated at a very high velocity. RDBMS lacks in high velocity because it’s designed for steady data retention rather than rapid growth
 
 4. Brewer’s CAP Theorem
     - Consistency, Availability, Partition-Tolerance
@@ -816,147 +821,93 @@ Representational State Transfer (ReST) is intended to evoke an image of how a we
         |Partition-Tolerance|the cluster **keeps on operating** when one or more nodes cannot communicate with the rest of the cluster
     - Brewer’s CAP Theorem: you can only pick any two of Consistency, Availability and Partition-Tolerance.
         - <img src="./docs/13.jpg" width="30%" height="50%" />
-        - While the theorem shows all three qualities are symmetrical, Consistency and Availability are at odds when a Partition happens
-        - “Hard” network partitions may be rare, but “soft” ones are not (a slow node may be considered dead even if it is not); ultimately, every partition is detected by a timeout
-        - Can have consequences that impact the cluster as a whole, e.g. a distributed join is only complete when all sub-queries return
-        - Traditional DBMS architectures were not concerned with network partitions, since all data were supposed to be in a small, co-located cluster of servers
-        - The emphasis on numerous commodity servers, can result in an increased number of hardware failures
         - The CAP theorem forces us to consider trade-offs among different options
+        - (not quite) While the theorem shows all three qualities are symmetrical, Consistency and Availability are at odds when a Partition happens (虽然定理表明这三个性质都是对称的，但是当一个分区发生时，一致性和可用性是不一致的)
+            - “Hard” network partitions may be rare, but “soft” ones are not (a slow node may be considered dead even if it is not); ultimately, every partition is detected by a timeout
+                - Can have consequences that impact the cluster as a whole
+                    - e.g. a distributed join is only complete when all sub-queries return
+                - Traditional DBMS architectures were not concerned with network partitions, since all data were supposed to be in a small, co-located cluster of servers
+            - Consequence:
+                - The emphasis on numerous commodity servers, can result in an increased number of hardware failures
 
 5. CAP Theorem and the Classification of Distributed Processing Algorithms
     - <img src="./docs/14.jpg" width="30%" height="50%" />
 
     1. Two phase commit: Consistency and Availability
-        - This is the usual algorithm used in relational DBMS's (and MongoDB, to same extent)
+        - This is the usual algorithm used in relational DBMS's (and MongoDB)
 
             ||what does it entail?|by|
             |---|---|---|
             |enforces consistency|every database is in a consistent state, and all are left in the same state|1. locking data that are within the transaction scope <br/>2. performing transactions on write-ahead logs <br/>3. completing transactions (commit) only when all nodes in the cluster have performed the transaction <br/>4. aborts transactions (rollback) when a partition is detected
             |reduced availability|data lock, stop in case of partition
-        - Therefore, two-phase commit is a good solution when the cluster is co-located, less good when it is distributed
+        - Conclusion
+            - Therefore, two-phase commit is a good solution when the cluster is co-located, less good when it is distributed
     2. Paxos: Consistency and Partition-Tolerance
         - This family of algorithms is driven by consensus, and is both partition-tolerant and consistent
         - In Paxos, every node is either a proposer or an accepter:
             - a proposer proposes a value (with a timestamp)
             - an accepter can accept or refuse it (e.g. if the accepter receives a more recent value)
             - When a proposer has received a sufficient number of acceptances (a quorum is reached), and a confirmation message is sent to the accepters with the agreed value
-        - Paxos clusters can recover from partitions and maintain consistency, but the smaller part of a partition (the part that is not in the quorum) will not send responses, hence the availability is compromised
+        - Conclusion
+            - Paxos clusters can recover from partitions and maintain consistency, but the smaller part of a partition (the part that is not in the quorum) will not send responses, hence the availability is compromised
     3. Multi-Version Concurrency Control (MVCC): Availability and Partition-tolerance
-        - MVCC is **a method to ensure availability** (every node in a cluster always
-accepts requests), and **some sort of recovery from a partition** by reconciling
-the single databases with revisions (data are not replaced, they are just given
-a new revision number)
-        - In MVCC, **concurrent updates are possible without distributed locks** (in
-optimistic locking only the local copy of the object is locked), since the
-updates will have different revision numbers; the transaction that completes
-last will get a higher revision number, hence will be considered as the current
-value.
-        - In case of cluster partition and concurrent requests with the same revision
-number going to two partitioned nodes, both are accepted, but once the
-partition is solved, there would be a conflict. Conflict that would have to be
-solved somehow (CouchDB returns a list of all current conflicts, which are
-then left to be solved by the application).
-
+        - MVCC is 
+            - **a method to ensure availability** (every node in a cluster always accepts requests) and
+            - **some sort of recovery from a partition** by reconciling the single databases with revisions (data are not replaced, they are just given a new revision number)
+        - In MVCC, **concurrent updates are possible without distributed locks** (in optimistic locking only the local copy of the object is locked), since the updates will have different revision numbers; 
+            - the transaction that completes last will get a higher revision number, hence will be considered as the current value.
+        - In case of cluster partition and concurrent requests with the same revision number going to two partitioned nodes, both are accepted, but once the partition is solved, there would be a conflict. 
+            - Conflict that would have to be solved somehow (CouchDB returns a list of all current conflicts, which are then left to be solved by the application).
+        - To achieve consistency, Bitcoin uses a form of MVCC based on proof-of-work (which is a proxy for the computing power used in a transaction) and on repeated confirmations by a majority of nodes of a history of transactions.
 
 #### Architecture
-1. Clustered database architecture
-- Distributed databases are run over “clusters”, that is, sets of connected computers
-- Clusters are needed to: 
-    - Distribute the computing load over multiple computers, e.g. to improve availability
-    - Storing multiple copies of data, e.g. to achieve redundancy 
-- Consider two document-oriented DBMSs (CouchDB and MongoDB) and their typical cluster architectures
-
-2. CouchDB Cluster Architecture
-- <img src="./docs/11.jpg" width="30%" height="50%" />
-- All nodes answer requests (read or write) at the same time
-    - no master
-- Sharding (splitting of data across nodes) is done on every node
-    - if a read request to shard A to node 1, then node 1 answer it
-    - if a read request to shard A to node 2, then redirect it to node 1 or node 3 answer it
-- When a node does not contain a document (say, a document of Shard A is requested to Node 2), the node requests it from another node (say, Node 1) and returns it to the client
-- Nodes can be added/removed easily, and their shards are re-balanced automatically upon addition/deletion of nodes
-- In this example there are 3 nodes, 4 shards and a replica number of 2
-    - replica: copy of data
-
-3. MongoDB Cluster Architecture
-- <img src="./docs/12.jpg" width="30%" height="50%" />
-- Sharding (splitting of data) is done at the replica set level, hence it involves more
-than one cluster (a shard is on top of a replica set)
-- Only the primary node in a replica set answers write requests, but read requests
-can -depending on the specifics of the configuration- be answered by every node
-(including secondary nodes) in the set 
-- Updates flow only from the primary to the secondary
-    - If a primary node fails, or discovers it is connected to a minority of nodes, a
-secondary of the same replica set is elected as the primary
-- Arbiters (MongoDB instances without data) can assist in breaking a tie in elections.
-- Data are balanced across replica sets - Since a quorum has to be reached, it is better to have an odd number of voting members (the arbiter in this diagram is only illustrative)
-
-4. MongoDB vs CouchDB Clusters
-
-    ||CouchDB|MongoDB|
-    |---|---|---|
-    |clusters are (difference in API)|less complex|more complex
-    |clusters are|more available|less available, as - by default - only primary nodes can talk to clients for read operations, (and exclusively so for write operations)
-    |software routers|while any HTTP client can connect to CouchDB|(MongoS) must be embedded in application servers
-    |Losing two nodes|out of three in the CouchDB architecture shown, means **losing access to one quarter of data**|in the MongoDB example implies **losing write access** to half the data (although there are ten nodes in the cluster instead of three), and possibly read access too, depending on the cluster configuration parameters and the nature (primary or secondary) of the lost nodes|
-    |Some features (such as unique indexes)||not supported in MongoDB sharded environmen
-    |Classification of Distributed Processing Algorithms|uses MVCC|uses a mix of two-phase commit (for replicating data from primary to secondary nodes) and Paxos-like (to elect a primary node in a replica-set)|
-    |emphasis on and all have partition-tolerance|Availability|consistency|
-
-- These differences are rooted in different approaches to an unsolvable problem, a problem defined by Brewer’s CAP Theorem
-    - first 5
-- The different choices of strategies explains the different cluster architectures of these two DBMSs
-    - last 2
-
-5. Sharding
+1. Sharding
     - What is it?  
-        Sharding is the partitioning of a database “horizontally”, i.e. the database
-    rows (or documents) are partitioned into subsets that are stored on different
-    servers. Every subset of rows is called a shard.
-    - Usually the number of shards is larger than the number of replicas, and the
-    number of nodes is larger than the number of replicas (usually set to 3)
-    - The number of shards that split a database dictates the (meaningful) number
-    of nodes: the maximum number of nodes is equal to the number of shards
-    (lest a node contains the same shard file twice)
+        - Sharding is the partitioning of a database “horizontally”, i.e. the database rows (or documents) are partitioned into subsets that are stored on different
+    servers. 
+        - shard: Every subset of rows
+    - Number of shards
+        - Larger than the number of replica
+        - the number of shards = the max number of nodes (lest a node contains the same shard file twice)
+    - Number of nodes
+        - larger than the number of replicas (usually set to 3)
+        - The max number of nodes = the number of shards (lest a node contains the same shard file twice)    
     - The main advantage of a sharded database lies in the
-        - improvement of performance through the distribution of computing load across nodes. 
+        - improve performance through the distribution of computing load across nodes. 
             - i.e.: better distribution of data
-        - In addition, it makes it easier to move data files around, 
+        - makes it easier to move data files around, 
             - e.g. when adding new nodes to the cluster
-    - There are different sharding strategies, most notably:
+    - sharding strategies:
         |||
         |---|---|
         |Hash sharding|to distribute rows evenly across the cluster|
         |Range sharding|similar rows (say, tweets coming for the same area) that are stored on the same node|
-
 6. Replication and Sharding
     - What is replication?   
-        Replication is the action of storing the same row (or document) on different nodes to make the database fault-tolerant.
-    - Replication and sharding can be combined with the objective of maximizing availability while maintaining a minimum level of data safety.
+        - Replication is the action of storing the same row (or document) on different nodes to make the database fault-tolerant.
+    - (adv) Replication and sharding can be combined with the objective of maximizing availability while maintaining a minimum level of data safety.
     - A bit of nomenclature:
         - n is the number of replicas (how many times the same data item is repeated across the cluster)
         - q is the number of shards (how many files a database is split)
         - n * q is the total number of shard files distributed in the different nodes of the cluster
-
 7. Partitions
     - What is it?  
-        A partition is a grouping of logically related rows in the same shard
-(for instance, all the tweets of the same user)
+        - A partition is a grouping of logically related rows in the same shard 
+            - e.g.: all the tweets of the same user
     - Advantage:  
-    Partitioning improves performance by restricting queries to a single     shard
-        - To be effective, partitions have to be relatively small (certainly
-    smaller than a shard)
+        - Partitioning improves performance by restricting queries to a single shard
+            - To be effective, partitions have to be relatively small (certainly smaller than a shard)
     - A database has to be declared “partitioned” during its creation
     - Partitions are a new feature of CouchDB 3.x
-
 8. MapReduce Algorithms
     - What is it?  
-        This family of algorithms, pioneered by Google, is particularly suited to parallel computing of the Single-Instruction, Multiple-Data type (see Flynn's taxonomy in a previous lecture).
+        - This family of algorithms is particularly suited to parallel computing of the Single-Instruction, Multiple-Data type (SIMD) (see Flynn's taxonomy in a previous lecture)
     - Advantage:  
-        Apart from parallelism, its advantage lies in moving the process to where data are, greatly reducing network traffic.
+        - parallelism
+        - greatly reducing network traffic by moving the process to where data are
     - Procedure:  
-        1. (Map), distributes data across machines, while 
-        2. (Reduce) hierarchically summarizes them until the result is obtained.
+        1. Map: distributes data across machines, while 
+        2. Reduce: hierarchically summarizes them until the result is obtained.
 
                 function map(name, document):
                     for each word w in document:
@@ -966,13 +917,75 @@ secondary of the same replica set is elected as the primary
                     for each pc in partialCounts:
                         sum += pc
                     emit (word, sum)
-    
+1. Clustered database architecture
+    - Distributed databases are run over “clusters”, that is, sets of connected computers
+    - Clusters are needed to: 
+        - Distribute the computing load over multiple computers, e.g. to improve availability
+        - Storing multiple copies of data, e.g. to achieve redundancy 
+    - Consider two document-oriented DBMSs (CouchDB and MongoDB) and their typical cluster architectures
+2. CouchDB Cluster Architecture
+    - <img src="./docs/11.jpg" width="30%" height="50%" />
+    - In this example there are 3 nodes, 4 shards and a replica number of 2
+        - replica: copy of data
+    - All nodes answer requests (read or write) at the same time
+        - no master
+    - Sharding (splitting of data across nodes) is done on every node
+        - if a read request to shard A to node 1, then node 1 answer it
+        - if a read request to shard A to node 2, then redirect it to node 1 or node 3 answer it
+        - How Shards Look in CouchDB see lecture 7 slide 23 
+            - and section "Replication and Sharding" below
+            ```
+            This is the content of the data/shards directory on a node of a three-node cluster
+            The test database has q=8, n=2, hence 16 shards files
+            The *.couch files are the actual files where data are stored
+            The sub-directories are named after the document _ids ranges
+            ```
+    - When a node does not contain a document (say, a document of Shard A is requested to Node 2), the node requests it from another node (say, Node 1) and returns it to the client
+    - Scalability: Nodes can be added/removed easily, and their shards are re-balanced automatically upon addition/deletion of nodes
+    - Quorums
+        - Write
+            - Can only complete successfully if the document is committed to a quorum of replicas, usually a simple majority
+        - Read
+            - Can only complete successfully only if a quorum of replicas return matching documents
+3. MongoDB Cluster Architecture
+    - <img src="./docs/12.jpg" width="30%" height="50%" />
+    - Sharding (splitting of data) is done at the replica set level
+        - i.e.: it involves more than one cluster (a shard is on top of a replica set)
+    - write requests can be answered only by the primary node in a replica set
+    - read requests can be answered by every node (including secondary nodes) in the set 
+        - depend on the specifics of the configuration 
+    - Updates flow only from the primary to the secondary
+        - If a primary node fails, or discovers it is connected to a minority of nodes, a secondary of the same replica set is elected as the primary
+    - Data are balanced across replica sets 
+    - Arbiters (MongoDB instances without data) can assist in breaking a tie in elections.
+    - Since a quorum has to be reached, it is better to have an odd number of voting members (the arbiter in this diagram is only illustrative)
+4. MongoDB vs CouchDB Clusters
+
+    |                | MongoDB                                                      | CouchDB                                                      |
+    | -------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+    | complexity     | Higher                                                       | Lower                                                        |
+    | Availability   | Lower                                                        | Higher                                                       |
+    | Accessibility  | MongoDB software routers must be embedded in application servers | Can connected by any HTTP client                             |
+    | Data Integrity | Lossing two nodes in the MongoDB in this example implies losing write access to half the data, and possibly read access too, depending on the cluster configuration parameters and the nature of the lost node (primary or secondary) | Losing two nodes out of three in the CouchDB example implies losing access to 1/4 of data |
+    | Functionality  | Some features, such as unique indexes, are not supported in MongoDB sharded environments | Can support this                                             |
+    | CAP            | <u>**Two-phase commit**</u> for replicating data from primary to secondary. <br/>**<u>Paxos-like</u>** to elect a primary node in a replica-set. | MVCC                                                         |
+
+    ||CouchDB|MongoDB|
+    |---|---|---|
+    |clusters are (difference in API)|less complex|more complex
+    |clusters are|more available|less available, as - by default - only primary nodes can talk to clients for read operations, (and exclusively so for write operations)
+    |software routers|while any HTTP client can connect to CouchDB|(MongoS) must be embedded in application servers
+    |Losing two nodes|out of three in the CouchDB architecture shown, means **losing access to 1/4 data**|in the MongoDB example implies **losing write access** to half the data (although there are ten nodes in the cluster instead of three), and possibly read access too, depending on the cluster configuration parameters and the nature (primary or secondary) of the lost nodes|
+    |Some features (such as unique indexes)||not supported in MongoDB sharded environmen
+    |Classification of Distributed Processing Algorithms|uses MVCC|- uses a mix of two-phase commit (for replicating data from primary to secondary nodes) <br/> - Paxos-like (to elect a primary node in a replica-set)|
+    |emphasis on and all have partition-tolerance|Availability|consistency|
+    - These differences are rooted in different approaches to an unsolvable problem, a problem defined by Brewer’s CAP Theorem
+        - first 5
+    - The different choices of strategies explains the different cluster architectures of these two DBMSs
+        - last 2
+
 
 ### Introduction to CouchDB
-
-
-### Note: not summarized
-- Addendum: The Peculiar Case of the Blockchain
 - Part 2: Introduction to CouchDB, recording 07:: 01:15:16
 
 
@@ -986,71 +999,220 @@ Terminology
     |Virtual Machine|A representation of a real machine using hardware/software that can host a guest operating system
     |Guest Operating System|An operating system that runs in a virtual machine environment that would otherwise run directly on a separate physical system.
 1. What happens in a VM?
-- <img src="./docs/16.jpg" width="70%" height="30%" />
+    - <img src="./docs/16.jpg" width="70%" height="30%" />
+    - Inside the virtual machine, there are Virtual Network Device, VHD(Virtual Hard disk), VMDK(Virtual Machinie Disk), qcow2(QEMU Copy on Write)
+    - Guest OS apps “think” they write to hard disk but translated to virtualised host hard drive by VMM
+        - Which one is determined by image that is launched
+
 2. Motivation ~~& History~~
-    |||
+    |motivation||
     |---|---|
     |Server Consolidation|1. Increased utilisation<br/>2. Reduced energy consumption
     |Personal virtual machines can be created on demand|1. No hardware purchase needed<br/>2. Public cloud computing - won't lockin Amazon
     |Security/Isolation|Share a single machine with multiple users - won't want everyone see what you are doing
     |Hardware independence|Relocate to different hardware
+    - originally, virtual machine = an efficient, isolated duplicate of the real machine
+        - Properties of interest (can also be thought as motivation):
+            - Fidelity
+                - Software on the VMM executes behaviour identical to that demonstrated when running on the machine directly, barring timing effects
+            - Performance
+                - An overwhelming majority of guest instructions executed by hardware without VMM intervention
+            - Safety
+                - The VMM manages all hardware resources
+    - history see lecture 8.1 slide 7
 3. Classification of Instructions
     ||||
     |---|---|---|
     |Privileged Instructions|instructions that trap if the processor is in user mode and do not trap in kernel mode
-    |Sensitive Instructions|instructions whose behaviour depends on the mode or configuration of the hardware|Different behaviours depending on whether in user or kernel mode<br/>e.g. POPF interrupt (for interrupt flag handling)
+    |Sensitive Instructions|instructions whose behaviour depends on the mode or configuration of the hardware|Different behaviours depending on whether in user or kernel mode<br/>- e.g. POPF interrupt (for interrupt flag handling)
     |Innocuous Instructions|instructions that are neither privileged nor sensitive|Read data, add numbers etc
-
     - Popek and Goldberg Theorem  
-        For any conventional third generation computer, a virtual machine monitor may be constructed if the set of **sensitive instructions** for that computer is a subset of the set of **privileged instructions** i.e. have to be trappable
-    - x86 architecture was historically not virtualisable, due to sensitive instructions that could not be trapped
+        - For any conventional third generation computer, a virtual machine monitor may be constructed if the set of **sensitive instructions** for that computer is a subset of the set of **privileged instructions** i.e. have to be trappable
+    - x86 architecture was historically not virtualisable, due to **<u>sensitive instructions</u> that could not be trapped** 
     - Intel and AMD introduced extensions to make x86 virtualisable
 3. What are the requirements for virtualisation?
     - <img src="./docs/17.jpg" width="40%" height="30%" />
-    |||Achieved by|problem|
+    |Typical Virtualisation Strategy||Achieved by|problem|
     |---|---|---|---|
-    |De-privileging|trap-and-emulate: VMM emulates the effect on system/hardware resources of privileged instructions whose execution traps into the VMM|running GuestOS at a lower hardware priority level than the VMM|Problematic on some architectures where privileged instructions do not trap when executed at de-privileged level
+    |De-privileging (trap-and-emulate)|trap-and-emulate: VMM emulates the effect on system/hardware resources of privileged instructions whose execution traps into the VMM|running GuestOS at a lower hardware priority level than the VMM|Problematic on some architectures where privileged instructions do not trap when executed at de-privileged level
     |Primary/shadow structures|1. VMM maintains “shadow” copies of critical structures whose “primary” versions are manipulated by the GuestOS, e.g. memory page tables<br/>2. Primary copies needed to insure correct versions are visible to GuestOS
-    |Memory traces|Controlling access to memory so that the shadow and primary structure remain coherent|write-protect primary copies so that update operations cause page faults which can be caught, interpreted, and addressed - Someones app/code doesn’t crash the server you are using!!!
-4. Virtualisation approaches
-    |||e.g.|Advantages|Disadvantages|
+    |Memory traces|Controlling access to memory so that the shadow and primary structure remain coherent|write-protect primary copies so that update operations cause page faults which can be caught, interpreted, and addressed <br/>- Someones app/code doesn’t crash the server you are using!!!
+4. Virtualisation approaches (compare with each other pair wise 1 v.s. 2, ...)
+    |Aspects of VMMs|What is it?|e.g.|Advantages|Disadvantages|
     |---|---|---|---|---|
-    |Full virtualisation|allow an unmodified guest OS to run in isolation by simulating full hardware - Guest OS has no idea it is not on physical machine|VMWare|1. Guest is unaware it is executing within a VM<br/>2. Guest OS need not be modified<br/>3. No hardware or OS assistance required<br/>4. Can run legacy OS|1. can be less efficient|
-    |Para-virtualisation|VMM/Hypervisor exposes special interface to guest OS for better performance. Requires a modified/hypervisor-aware Guest OS - Can optimise systems to use this interface since not all instructions need to be trapped/dealt with|Xen|1. Lower virtualisation overheads, so better performance|1. Need to modify guest OS - Can’t run arbitrary OS!<br/>2. Less portable<br/>3. Less compatibility<br/>
+    |Full virtualisation|allow an unmodified guest OS to run in isolation by simulating full hardware <br/>- Guest OS has no idea it is not on physical machine|VMWare|1. Guest is unaware it is executing within a VM<br/>2. Guest OS need not be modified<br/>3. No hardware or OS assistance required<br/>4. Can run legacy OS|1. can be less efficient|
+    |Para-virtualisation|- VMM/Hypervisor exposes special interface to guest OS for better performance. Requires a modified/hypervisor-aware Guest OS <br/> - Can optimise systems to use this interface since not all instructions need to be trapped/dealt with|Xen|1. Lower virtualisation overheads, so better performance|1. Need to modify guest OS - Can’t run arbitrary OS!<br/>2. Less portable<br/>3. Less compatibility<br/>
     |Hardware-assisted virtualisation|Hardware provides architectural support for running a Hypervisor<br/>- New processors typically have this<br/>- Requires that all sensitive instructions trappable|KVM|1. Good performance<br/>2. Easier to implement<br/>3. Advanced implementation supports hardware assisted DMA, memory virtualisation|1. Needs hardware support
-    |Binary Translation|– Trap and execute occurs by scanning guest instruction stream and replacing sensitive instructions with emulated code - Don’t need hardware support, but can be much harder to achieve|VMWare|1. Guest OS need not be modified<br/>2. No hardware or OS assistance required<br/>3. Can run legacy OS|1. Overheads<br/> 2. Complicated<br/> 3. Need to replace instructions “on-the-fly”<br/> 4. Library support to help this, e.g. vCUDA
+    |Binary Translation|Trap and execute occurs by scanning guest instruction stream and replacing sensitive instructions with emulated code <br/> - Don’t need hardware support, but can be much harder to achieve|VMWare|1. Guest OS need not be modified<br/>2. No hardware or OS assistance required<br/>3. Can run legacy OS|1. Overheads<br/> 2. Complicated<br/> 3. Need to replace instructions “on-the-fly”<br/> 4. Library support to help this, e.g. vCUDA
     |Bare Metal Hypervisor|VMM runs directly on actual hardware<br/>- Boots up and runs on actual physical machine<br/>- VMM has to support device drivers, all HW mgt |VMWare ESX Server
     |Hosted Virtualisation|VMM runs on top of another operating system|VMWare Workstation
-    |Operating System Level Virtualisation|1. Lightweight VMs<br/>2. Instead of whole-system virtualisation, the OS creates mini-containers|Docker|1. Lightweight<br/>2. Many more VMs on same hardware<br/>3. Can be used to package applications and all OS dependencies into container|1. Can only run apps designed for the same OS<br/>2. Cannot host a different guest OS<br/>3. Can only use native file systems<br/>4. Uses same resources as other containers
-    - <img src="./docs/18.jpg" width="60%" height="30%" />  for Full virtualisation, Hardware-assisted virtualisation, Binary Translation
-    - <img src="./docs/19.jpg" width="40%" height="30%" /> for Para-virtualisation
-5. Memory management
-    - <img src="./docs/20.jpg" width="40%" height="30%" />
+    |Operating System Level Virtualisation|1. Lightweight VMs<br/>2. Instead of whole-system virtualisation, the OS creates mini-containers|Docker|1. Lightweight<br/>2. Many more VMs on same hardware<br/>3. Can be used to package applications and all OS dependencies into container|1. Can only run apps designed for the same OS<br/>2. Cannot host a different guest OS<br/>3. Can only use native file systems<br/>4. Uses same resources as other containers|
+    |Memory Virtualisation|VMM maintains shadow page tables in lock-step with the page tables.<br/> detail see below section|||1. Adds additional management overhead
+    - <img src="./docs/18.jpg" width="60%" height="30%" />  for Full virtualisation, Binary Translation
+        - but in each case there can be some differences in rangs for each service see lecture 8.1 slides 15, 19
+    - <img src="./docs/19.jpg" width="40%" height="30%" /> for Para-virtualisation, Hardware-assisted virtualisation
+        differ in ring 0 service, see lecture 8.1 slides 16, 18
+        - New Ring -1 for VMM supported Page tables, virtual memory mgt, direct memory access for high speed reads etc
         
+5. Memory Virtualisation
+    - <img src="./docs/20.jpg" width="40%" height="30%" />
         - In conventional case, page tables store the logical page number and physical page number mappings
     - <img src="./docs/21.jpg" width="40%" height="30%" />
         
         - In VMM case, VMM maintains shadow page tables in lock-step with the page tables. Additional management overhead is added.
     - Shadow Page Tables
-        - <img src="./docs/22.jpg" width="40%" height="30%" />
         - VMM maintains shadow page tables in lock-step with the page tables
-        - Adds additional management overhead
-        - Hardware performs guest -> physical and physical -> machine translation
+        - <img src="./docs/22.jpg" width="40%" height="30%" />
+        - In this case, one OS represent in blue, the other in green
+        - Disadv: Adds additional management overhead
+            - Hardware performs guest -> physical and physical -> machine translation
 6. Live migration
-
-    having continuity of service during data moving
+    - having continuity of service during data moving
+    - Live Migration from Virtualisation Perspective/Live migration of virtual machines
+        - see lecture 8.1 slide 25
 
 ## Week 8.2 – OpenStack & Comparing and Contrasting AWS with NeCTAR Cloud
+- Offers free and open-source software platform for cloud computing for <u>**IaaS**</u>
+- Consists of interrelated components (services) that control / support compute, storage, and networking resources
+- Often used through web-based dashboards, through command-line tools, or programmatically through ReSTful APIs
+### Typically asynchronous queuing systems used (AMQP)
+- <img src="./docs/29.jpg" width="60%" height="30%" />
 
-TODO: Lecture 08: 00:44:19
+### Key Services
+#### Keystone -- Identity Service
+- Provides an authentication and authorization service fro OpenStack services
+  - Tracks users/permissions
+- Provides a catalog of endpoints for all OpenStack services
+  - Each service registered during install
+    - Know where they are and who can do what with them
+  - Project membership
+  - firewall rules
+- Generic authorization system
+  - More refer to week10 ==TODO==
+#### Nova -- Compute Service
+- Manages the lifecycle of compute instances in an OpenStack environment
+- Responsibilities for virtual machines on demand, include 
+  - spawning
+  - scheduling
+  - Decommissioning
+- Virtualisation agnostic
+  - Key point of success as it allows openStack works with **<u>any kind</u>** of virtualisation solution, including
+    - XenAPI, Hyper-V, VMWare ESX
+    - Docker
+  - You are not binding with any specific solution
+- ==(The following not covered in detail in the lecture)==
+- API
+  - Nova-api
+    - Accepts/responds to end user API calls
+    - Supports openStack Compute & EC2 & admin APIs
+  - Compute Core
+    - Nova-computer
+      - Daemon that creates/terminates VMs through hypervisor APIs
+    - Nova-scheduler
+      - schedules VM instance requests from queue and determines which server host to run
+    - Nova-conductor
+      - Mediates interactions between compute services and other components, e.g. image database
+  - Networking
+    - Nova-network
+      - Accepts network tasks from queue and manipulates network, e.g. changing IP table rules
+#### Swift - Object Storage
+- Stores and retrieves arbitrary unstructured data objects via ReSTful API
+  - VM images and data
+  - This service can be used to access arbitrary unstructured data
+- Fault tolerant with data replication and scale-out architecture
+  - Available from anywhere; persists until deleted
+  - Allows to write objects and files to multiple drives, ensuring the data is replicated across a server cluster
+- Can be used with/without **<u>Nova</u>**
+- Client/admin support
+  - Swift client allows users to submit commands to ReST API through command line clients to configure/connect object storage to VMs
+#### Cinder -- Block Storage
+- Provides persistent block storage to virtual machines (instances) and supports creation and management of block storage devices
+- Cinder access associated with a VM
+  - Cinder-api
+    - routes requests to cinder-volume
+  - Cinder-volume
+    - interacts with block storage service and scheduler to read/write requests; can interact with multiple flavours of storage (flexible driver architecture)
+  - Cinder-scheduler
+    - selects optimal storage provider node to create volumes (ala nova-scheduler)
+  - Cinder-backup
+    - provides backup to any types of volume to backup storage provider
+#### Glance -- Image Service
+- Accepts requests for disk or server images and their associated metadata (from **<u>Swift</u>**) and retrieves / installs (through **<u>Nova</u>**)
+  - Find the image at **<u>Swift</u>**, but getting the image at **<u>Glance</u>**
+- API
+  - Glance-api
+    - Image discovery, retrieval and storage requests
+  - Glance-registry
+    - Stores, processes and retrieves metadata about images, e.g. size and type
+      - Ubuntu 14.04
+      - My last good snapshot
+        - I (the owner) can control who can access the snapshot using **<u>Keystone</u>**
+#### Neutron -- Networking Services
+- Supports networking of OpenStack services
+  - subnet
+  - Network in and out
+  - Network security group
+- Offers an API for users to define networks and the attachments into them,
+  - switches
+  - routers
+- Pluggable architecture that supports multiple networking vendors and technologies
+- Neutron-server
+  - accepts and routes API requests to appropriate plug-ins for action
+  - Port management, e.g. default SSH, VM-specific rules, ...
+  - More broadly configuration of availability zone networking, e.g. subnets, DHCP, ...
+#### Horizon -- Dashboard Service
+- Provides a web-based self-service portal to interact with underlying OpenStack services, such as 
+  1. launching an instance
+  2. assigning IP addresses
+  3. configuring access controls
+- Based on Python/Django web application
+- Requires Nova, Keystone, Glance, Neutron
+- Other services optional...
+#### Trove -- Database Service
+- Provides scalable and reliable Cloud database (DBaaS) functionality for both <u>relational</u> and <u>non-relational</u> database engines
+- Benefits
+  - Resource isolation
+  - high performance
+  - automates deployment
+  - config
+  - patching
+  - backups
+  - restores
+  - monitoring
+  - ...
+- Use image service for each DB type and trove-manage to offer them to tenants/user communities
+#### Sahara -- Data Processing Service
+- Provides capabilities to provision and scale Hadoop clusters in OpenStack by specifying parameters such as Hadoop version, cluster topology and node hardware details
+- User fills in details and Sahara supports the automated deployment of infrastructure with support for addition/removal of worker nodes on demand
+#### Heat -- Orchestration Service
+- Template-driven service to manage lifecycle of applications deployed on Openstack
+- Stack
+  - Another name for the template and procedure behind creating infrastructure and the required resources from the template file
+- Can be integrated with automation tools such as Chef
+  - Puppet
+  - Ansible
+- Heat details
+    - heat_template_version: allows to specify which version of Heat, the template was written for (optional)
+    - Description: describes the intent of the template to a human audience (optional)
+    - Parameters: the arguments that the user might be required to provide (optional)
+    - Resources: the specifications of resources that are to be created (mandatory)
+    - Outputs: any expected values that are to be returned once the template has been processed (optional)
+
+### Creating Stacks in MRC/NeCTAR
+1. Create the template file according to your requirements
+2. Provide environment details (name of key file, image id, etc)
+3. Select a name for your stack and confirm the parameters
+4. Make sure rollback checkbox is marked, so if anything goes wrong, all partially created resources get dumped too
+5. Wait for the magic to happen! 
+
 
 ## Week 8.3 - Serverless (Function as a Service (FaaS))
 1. Why Functions?
     - A function in computer science is typically a piece of code that takes in parameters and returns a value
     - Functions are the founding concept of functional programming - one of the oldest programming paradigms
     - Why they are used in Faas?
-    - Functions are free of 
-        - side-effects, 
+    - Functions
+        - free of side-effects, 
             - What is it?
                 - A function that does not modify the state of the system
                     - e.g.: a function that takes an image and returns a thumbnail of that image
@@ -1084,11 +1246,11 @@ TODO: Lecture 08: 00:44:19
         - which make them ideal for 
             - parallel execution and 
             - rapid scaling-up and -down
+            - Functions are free of side-effects, ephemeral, and stateless, which make them ideal for parallel execution and rapid scaling-up and -down, hence their use in FaaS
 2. Function & FaaS
     - Side effects
     - stateful & stateless
     - Synchronous/Asynchronous Functions
-
 3. What is Function as a Service (FaaS)?
     - FaaS is also know as Serverless computing
     - FaaS is an extreme form of microservice architecture
@@ -1106,16 +1268,32 @@ TODO: Lecture 08: 00:44:19
     - Functions can call each other
     - Functions and events can be combined to build software applications
     - Combining event-driven scenarios and functions resembles how User Interface software is built: user actions trigger the execution of pieces of code
-    - E.g.: 
+    - E.g.: FaaS Services and Frameworks
         - Amazon’s AWS Lambda
         - Google Cloud Functions
         - Azure Functions by Microsoft
-6. proprietary FaaS services v.s. open-source FaaS frameworks
-    - open-source FaaS frameworks can be deployed on your cluster, peered into, disassembled, and improved by you.
+    - proprietary FaaS services v.s. open-source FaaS frameworks
+        - open-source FaaS frameworks can be deployed on your cluster, peered into, disassembled, and improved by you.
+
+## Workshop week5: OpenFaaS
+### Properties
+- Open-source framework that uses Docker containers to deliver FaaS functionality
+- Every function in OpenFaaS is a Docker container, ensuring loose coupling between functions
+  - Function can be written in different languages and mixed freely
+- Functions are passed a request as an object in the language of choice and return a response as an object
+- OpenFaaS can use either Docker Swarm or Kubernetes to manage cluster of nodes on which functions run
+- By using Docker containers as functions, OpenFaaS allow to freely mix different languages and environments at the cost of **<u>decreased performance</u>** as containers are inherently heavier than threads
+  - However, it is possible to reduce the size to only a few MBs
+### Auto-scalability and OpenFaaS
+- OpenFaaS can add more Docker containers when a function is called more often, and remove containers
+when the function is called less often 
+- The scaling-up (and down) of functions can be tied to memory or CPU utilization as well (currently only on Kubernetes-managed clusters though)
 
 ## Week 9 - Big Data Analytics
 1. Why we need it?
     - There would not be much point in amassing vast amount of data without being able to analyse it, hence the blossoming of large-scale business intelligence and more complex machine learning algorithms. 
+    - Overlapping among business intelligence, machine learning, statistics and data mining.
+        - Just use big data analytics
 2. What is it?
     - There is a good deal of overlap and confusion among terms such as business intelligence, machine learning, statistics, and data mining. For the sake of clarity, we just use the more general term (big) data analytics
 3. Examples of Analytics
