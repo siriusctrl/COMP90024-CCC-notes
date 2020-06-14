@@ -615,6 +615,16 @@ Representational State Transfer (ReST) is intended to evoke an image of how a we
     - what is it?
         - is a way of turning a problem into a RESTful web service:   
     an arrangement of URIs, HTTP, and XML that works like the rest of the Web
+        - ROA has a style of supporting Restful services that allows folk to interact/navigate their functionality (HATEOS etc). The services still do PUT, POST, GET etc.
+    - ROA \& Rest
+        - ROA has a style of supporting Restful services that allows folk to interact/navigate their functionality (HATEOS etc). The services still do PUT, POST, GET etc.
+    - ROA v.s. SOA
+        - similar
+            - Much of the philosophy behind SOA applies to ROA, 
+                - e.g. services should support abstraction, contract, autonomy etc, 
+        - ROA has advantages
+            - there is no need to understand what methods mean or deal with complex WSDL etc. You can mix/match service models
+                - e.g. consider the AURIN architecture with ReST, SOAP and many other service flavours.
     - ROA procedure
         - ```
             1. Figure out the data set 
@@ -966,7 +976,7 @@ Representational State Transfer (ReST) is intended to evoke an image of how a we
     | complexity     | Higher                                                       | Lower                                                        |
     | Availability   | Lower                                                        | Higher                                                       |
     | Accessibility  | MongoDB software routers must be embedded in application servers | Can connected by any HTTP client                             |
-    | Data Integrity | Lossing two nodes in the MongoDB in this example implies losing write access to half the data, and possibly read access too, depending on the cluster configuration parameters and the nature of the lost node (primary or secondary) | Losing two nodes out of three in the CouchDB example implies losing access to 1/4 of data |
+    | Data Integrity | Lossing two nodes in the MongoDB in this example implies losing write access to half the data, and possibly read access too, depending on the cluster configuration parameters and the nature of the lost node (primary or secondary) | Losing two nodes out of three in the CouchDB example implies losing access to between 1/4 and 1/2 the data, depending on the nodes that fail|in the MongoDB example implies **losing write access |
     | Functionality  | Some features, such as unique indexes, are not supported in MongoDB sharded environments | Can support this                                             |
     | CAP            | <u>**Two-phase commit**</u> for replicating data from primary to secondary. <br/>**<u>Paxos-like</u>** to elect a primary node in a replica-set. | MVCC                                                         |
 
@@ -975,7 +985,7 @@ Representational State Transfer (ReST) is intended to evoke an image of how a we
     |clusters are (difference in API)|less complex|more complex
     |clusters are|more available|less available, as - by default - only primary nodes can talk to clients for read operations, (and exclusively so for write operations)
     |software routers|while any HTTP client can connect to CouchDB|(MongoS) must be embedded in application servers
-    |Losing two nodes|out of three in the CouchDB architecture shown, means **losing access to 1/4 data**|in the MongoDB example implies **losing write access** to half the data (although there are ten nodes in the cluster instead of three), and possibly read access too, depending on the cluster configuration parameters and the nature (primary or secondary) of the lost nodes|
+    |Losing two nodes|out of three in the CouchDB architecture shown, means **losing access to between 1/4 and 1/2 the data, depending on the nodes that fail**|in the MongoDB example implies **losing write access** to half the data (although there are ten nodes in the cluster instead of three), and possibly read access too, depending on the cluster configuration parameters and the nature (primary or secondary) of the lost nodes|
     |Some features (such as unique indexes)||not supported in MongoDB sharded environmen
     |Classification of Distributed Processing Algorithms|uses MVCC|- uses a mix of two-phase commit (for replicating data from primary to secondary nodes) <br/> - Paxos-like (to elect a primary node in a replica-set)|
     |emphasis on and all have partition-tolerance|Availability|consistency|
@@ -1319,6 +1329,9 @@ when the function is called less often
 ### Apache Hadoop
 1. How it works?
     - Apache Hadoop started as a way to distribute files over a cluster and execute MapReduce tasks, but many tools have now been built on that foundation to add further functionality
+2. Components
+    - Hadoop Distributed File System (HDFS)
+    - Hadoop Resource Manager (YARN)
 2. Hadoop Distributed File System (HDFS)
     - What is it?
         - The core of Hadoop is a fault tolerant file system that has been explicitly designed to span many nodes
@@ -1334,16 +1347,36 @@ when the function is called less often
     - HDFS Architecture
         - A HDFS file is a collection of blocks stored in datanodes, with metadata (such as the position of those blocks) that is stored in namenodes
         - <img src="./docs/23.png" width="60%" height="50%" />
+    - The HDFS Shell
+        - Why we need it?
+            - Managing the files on a HDFS cluster cannot be done on the operating system shell
+                - hence a custom HDFS shell must be used.
+        - The HDFS file system shell replicates many of the usual commands (ls, rm, etc.), with some other commands dedicated to loading files from the operating system to the cluster (and back)
 3. The Hadoop Resource Manager (YARN)
-    - Lecture 09:: 00:22:10
-4. The HDFS Shell
+    - What is it/What does it do?
+        - YARN deals with Executing MapReduce jobs on a cluster
+            - It is composed of a central ***Resource Manager*** and
+            - Many ***Node Managers*** that reside on slave machines
+    - Every time a MapReduce job is scheduled for execution on a Hadoop cluster, YARN starts an **<u>Application Master</u>** that negotiates resources with the **<u>Resource Manager</u>** and starts Containers on the slave nodes
+        - Containers are the processes where the actual processing is done
 5. Programming on Hadoop
 ### Apache Spark
-1. Why Spark not Hadoop?
+1. Why Spark not Hadoop?/Spark v.s. Hadoop
     - While Hadoop MapReduce works well, it is geared towards performing relatively simple jobs on large datasets.
-    - However, when complex jobs are performed (say, machine learning or graph-based algorithms), there is a strong incentive for caching data in memory and in having finer-grained control on the execution of jobs.
-    - Apache Spark was designed to reduce the latency inherent in the Hadoop approach for the execution of MapReduce jobs.
-    - Spark can operate within the Hadoop architecture, using YARN and Zookeeper to manage computing resources, and storing data on HDFS.
+        - While the execution order of Hadoop MapReduce is fixed, the lazy evaluation of Spark allows the developer to stop worrying about it, and have the Spark optimizer take care of it. 
+        - In addition, the driver program can be divided into steps that are easier to understand without sacrificing performance (as long as those steps are composed of transformations).
+    - However, when complex jobs are performed, we would like
+        - Caching data in memory
+        - Having finer-grained control on the execution of the jobs
+    - Spark was designed to 
+        - reduce the latency inherent in the Hadoop approach for the execution of MapReduce job
+        - How?
+            - The transformations in the program use lazy evaluation, hence Spark has the possibility of optimizing the process
+    - Spark can operate within the Hadoop architecture, using YARN and Zookeeper to 
+        - Manage computing resources
+        - Storing data on HDFS
+    - Spark has a tightly-coupled nature of its main components
+    - Spark has a cluster manager of its own, but it can work with other cluster managers, such as YARN or MESOS.
 2. Spark Architecture
     - One of the strong points of Spark is the tightly-coupled nature of its main components
         - <img src="./docs/24.jpg" width="60%" height="50%" />
@@ -1353,7 +1386,41 @@ when the function is called less often
 4. Programming on Spark
     - Lecture 09:: 00:34:24
 5. Spark Runtime Architecture
-    - Lecture 09:: 00:48:44
+    - Applications in Spark are composed of different components including
+      - Job
+        - The data processing that has to be performed on a dataset
+        - the overall processing that Spark is directed to perform by a driver program
+      - Task
+        - A single operation on a dataset
+        - a single transformation operating on a single partition of data on a single node
+      - Stage
+        - Set of task operating on a single partition
+        - A job is composed of more than one stage when data are to be transferred across node
+        - The fewer the number of stages, the faster the computation (shuffling data across the cluster is slow)
+      - Executors
+        - The processes in which tasks are executed
+      - Cluster Manager
+        - The process assigning tasks to executors
+      - Driver program
+        - The main logic of the application
+      - Spark application
+        - Driver program + Executor
+      - Spark Context
+        - The general configuration of the job
+    - These different components can be arranged in **<u>three</u>** different deployment modes (below) across the cluster
+    - Spark Runtime Mode
+        - Local Mode
+            - In local mode, every Spark component runs within the same JVM. However, the Spark application can still run in parallel, as there may be more than on executor active
+            - When used?
+                - Good for developing and debugging
+        - Cluster Mode
+            - In cluster mode, every component, including the driver program, is executed on the cluster. Upon launching, the job can run autonomously. 
+            - When used?
+                - This is the common way of running non-interactive Spark jobs.
+        - Client Mode
+            - The driver program talks directly to the executors on the worker nodes. Therefore, the machine hosting the driver program has to be connected to the cluster until job completion.
+            - When used? 
+                - Client mode must be used when the applications are interactive, as happens in the Python or Scala Spark shells.
 6. Resilient Distributed Dataset (RDDs) (Central to Spark)
     - What is it?
         - the way data are stored in Spark during computation, and understanding them is crucial to writing programs in Spark:
@@ -1368,21 +1435,35 @@ when the function is called less often
             |---|---|---|
             |immutable|once defined, they cannot be changed|simplifies parallel computations on them, and <br/>is consistent with the functional programming paradigm
             |transient|they are meant to be used only once, then discarded (but they can be cached, if it improves performance)|
-            |lazily-evaluated|the evaluation process happens only when data cannot be kept in an RDD, as when the number of objects in an RDD has to be computed, or an RDD has to be written to a file (these are called actions), but not when an RDD are transformed into another RDD (these are called transformations)
-7. Spark Jobs, Tasks, and Stages
-    - Lecture 09:: 01:24:05
+            |lazily-evaluated|the evaluation process happens only <br/> - when data cannot be kept in an RDD, as when the number of objects in an RDD has to be computed, <br/> - or an RDD has to be written to a file (these are called actions), but <br/> - not when an RDD are transformed into another RDD (these are called transformations)|optimizing the process
+            - The transformations in the program use lazy evaluation, hence Spark has the possibility of optimizing the process
+    - How to Build an RDD?
+        - created out of data stored elsewhere (HDFS, a local text file, a DBMS)
+        - created out of collections too, using the parallelize function
 
 ## Week 10.1 – Security and Clouds
 1. Why is security so important?
     - If systems (Grids/Clouds/outsourced infrastructure!) are not secure 
         - Large communities will not engage
             - medical community, industry, financial community, etc they will only use their own internal resources, e.g.: private clouds!
-        - Expensive to repeat some experiments
-            - Huge machines running large simulations for several years
-        - Legal and ethical issues possible to be violated with all sorts of consequences
-            - e.g. data protection act violations and fines incurred
-                - Amazon Web Services, Sydney
-        - Trust is easily lost and hard to re-establish
+    - Expensive to repeat some experiments
+        - Huge machines running large simulations for several years
+    - Legal and ethical issues possible to be violated with all sorts of consequences
+        - e.g. data protection act violations and fines incurred
+            - Amazon Web Services, Sydney
+    - Trust is easily lost and hard to re-establish
+- What do we mean by security anyway?
+    - Secure from whom?
+        - From sys-admin?
+        - From rogue employee?
+- Secure against what?
+    - Security is never black and white but is a grey landscape where the context determines the accuracy of how secure a system is
+        - e.g. secure as given by a set of security requirements
+- security technology ≠ secure system
+    - Ultra secure system using 2048+ bit encryption technology, packet filtering firewalls, …
+        - on laptop in unlocked room
+        - on PC with password on “post-it” on screen/desk
+        - the challenge of peta/exa-scale computers and possibility for brute force cracking
 2. The Challenge of Security
     - Grids and Clouds (IaaS) allow users to compile codes that do stuff on physical/virtual machines
         - In the Grid world a rich blend of facilities co-existed (were accessible/integrated!) which had "issues" - prevent people do bad staff
@@ -1403,45 +1484,38 @@ when the function is called less often
             - I/O demanding applications
                 - You hopefully never experienced this, but early NeCTAR RC had performance issues!
         - The multi-faceted challenges of ”life beyond the organisational firewall”?
-
-- What do we mean by security anyway?
-    - Secure from whom?
-        - From sys-admin?
-        - From rogue employee?
-
-- Secure against what?
-    - Security is never black and white but is a grey landscape where the context determines the accuracy of how secure a system is
-        - e.g. secure as given by a set of security requirements
-- Note that security technology ≠ secure system
-    - Ultra secure system using 2048+ bit encryption technology, packet filtering firewalls, …
-        - on laptop in unlocked room
-        - on PC with password on “post-it” on screen/desk
-        - the challenge of peta/exa-scale computers and possibility for brute force cracking
-
-- Technical Challenges of Security
+3. Technical Challenges of Security
     - All are important but some applications/domains have more emphasis on concepts than others
-    - Key is to make all of this simple/transparent to users!
+        - Key is to make all of this simple/transparent to users!
     - <img src="./docs/25.jpg" width="60%" height="50%" />
     - Single sign-on
+        - What is it?
+            - Login once, but can access many more resources that potentially provided by other providers
+            - When you login The university of Melbourne Cloud, you could also access the amazon cloud
         - **The Grid model (and Shib model!) needed**
         - **Currently not solved for Cloud-based IaaS**
         - Onus (责任) is on non-Cloud developers to define/support this
     - Auditing 
-        - logging, intrusion detection, auditing of security in external computer facilities 
-            - **well established in theory and practice and for local systems**
-                - Less mature in Cloud environments (beyond the firewall!)
-            - Tools to support generation of diagnostic trails 
-                - Across federations of Clouds?
-                - Log/keep all information?
-                - For how long?
+        - What is it?
+            - logging, intrusion detection, auditing of security in external computer facilities. Logging the actions by each user
+                - When bad thing happen, we have the record
+        - **well established in theory and practice and for local systems**
+            - Less mature in Cloud environments (beyond the firewall!)
+        - Tools to support generation of diagnostic trails 
+            - Across federations of Clouds?
+            - Log/keep all information?
+            - For how long?
+        - Problem
+            - The record are distributed most of time
+        - Solution
+            - Use block-chain ledger to provide confidentiality of the log
     - Deletion (and encryption!!!)
         - **Data deletion with no direct hard disk** (might cost a lot of money to delete it)
             - Many tools and utilities don’t work!
         - Scale of data
             - Securely deleting a few Mb easy enough
-            - Try to delete a few Tb+?
     - Liability
-        - notice risk when put data here
+        - Using contract to state the risk when put data here
     - Licensing
         - Challenges with the Cloud delivery model (Where can jobs realistically run)
         - Many license models
@@ -1466,7 +1540,8 @@ when the function is called less often
         - requirements and guarantee on cloud using
 
 - Authentication
-    - prove who you are
+    What does it do?
+        - prove who you are
     - What is it?
         - Authentication is <u>**the establishment and propagation of a user’s identity in the system**</u>
         - e.g. so site X can check that user Y is attempting to gain access to it’s resources
@@ -1476,64 +1551,66 @@ when the function is called less often
                     - Password selection
                         - 16 characters, upper/lower case and must include nonalphanumeric characters and be changed quarterly…!?!?!?!
                     - Treatment of certificates
-        - Local username/password?
-            - 100,000+ users that come and go
-        - Centralised vs decentralised systems?
-            - More scalable solution needed
-        - Decentralised Authentication (Proof of Identity) thru Shibboleth
-            - <img src="./docs/28.jpg" width="70%" height="50%" />
-            - Supports Single-Sign On (in case you were unaware)
-        - Public Key Infrastructures (PKI) underpins MANY systems
-            - What is it?
-                - an arrangement that binds public key with respective identities of entities(like people and organization). 
-                - The binding is established through a process of registration and issurance of certificates at and by a certificate authority 
-                - The PKI role that assures valid and correct registration is called a registration authority(RA). RA is responsible for accepting requests for digital certificates and authenticating the entity making the reques
-            - Based on public key cryptography
-            - Public Key Cryptography
-                - Also called Asymmetric Cryptography
-                    - Two distinct keys
-                        - One that must be kept private
-                            - Private Key
-                        - One that can be made public
-                            - Public Key
-                    - Two keys complementary, but essential that cannot find out value of private key from public key
-                        - With private keys can digitally sign messages, documents and validate them with associated public keys
-                            - Check whether changed, useful for non-repudiation
-                - Public Key Cryptography simplifies key management
-                    - Don’t need to have many keys for long time
-                        - The longer keys are left in storage, more likelihood of their being compromised
-                            - Instead use Public Keys for short time and then discard
-                            - Public Keys can be freely distributed
-                        - Only Private Key needs to be kept long term and kept securely
-            - PKI and Cloud
-                - So what has this got to do with Cloud…?
-                    - IaaS – key pair!
-                - Cloud inter-operability begins with security!
-                    - There is no single, ubiquitous CA, there are many
-                - There are many ways to prove your identity
-                    - OpenId, FacebookId, Visa credit card for Amazon, …
-                        - Degrees of trust 
-                    - But remember need for single sign-on
-                    - Prove identity once and access distributed, autonomous resources!
-            - Public Key Certificates
-                - (PKC & PKI) Mechanism connecting public key to user with corresponding private key is Public Key Certificate 
-                    - Public key certificate contains public key and identifies the user with the corresponding private key
-                        - Distinguished Name (DN): CN=Richard Sinnott; OU=Dept CIS; O=UniMelb; C=AU
-                    - Not a new idea
-                        - Business card
-                            - My name, my association, contact details, …
-                                - Can be distributed to people I want to exchange info with
-                            - If include public key on it, then have basic certificate, but
-                                - has to be delivered in person (or no trust!), who says I work at Melbourne?, could be a forgery, I might be an impostor, what if I move to Monash or my phone number changes, who would have 1024-bit key on business card, …
-                - Public Key Certificates & Certification Authority
-                    - Public Key Certificates issued by trusted "Certification Authority"
-            - Certification Authority
-                - What it it?
-                    - <u>**Central component of PKI is Certification Authority (CA)**</u>
-                - CA has numerous responsibilities 
-                    - <u>**Policy and procedures**</u>
-                        - How to’s, do’s and don’ts of using certificates 
-                        - Processes that should be followed by users, organisations, service providers …(and consequence for violating them!)
+        - challenge: 
+            - Local username/password?
+                - 100,000+ users that come and go (scalability)
+            - Centralised vs decentralised systems?
+                - More scalable solution needed
+                - Decentralised Authentication (Proof of Identity) thru Shibboleth
+                    - <img src="./docs/28.jpg" width="70%" height="50%" />
+                    - Supports Single-Sign On (in case you were unaware)
+    - Public Key Infrastructures (PKI) underpins MANY systems
+        - What is it?
+            - an arrangement that binds public key with respective identities of entities(like people and organization). 
+            - The binding is established through a process of registration and issurance of certificates at and by a certificate authority 
+            - The PKI role that assures valid and correct registration is called a registration authority(RA). RA is responsible for accepting requests for digital certificates and authenticating the entity making the reques
+        - Based on public key cryptography
+        - Public Key Cryptography
+            - Also called Asymmetric Cryptography
+                - Two distinct keys
+                    - One that must be kept private
+                        - Private Key
+                    - One that can be made public
+                        - Public Key
+                - Two keys complementary, but essential that cannot find out value of private key from public key
+                    - With private keys can digitally sign messages, documents and validate them with associated public keys
+                        - Check whether changed, useful for non-repudiation
+            - Public Key Cryptography simplifies key management
+                - Don’t need to have many keys for long time
+                    - The longer keys are left in storage, more likelihood of their being compromised
+                        - Instead use Public Keys for short time and then discard
+                        - Public Keys can be freely distributed
+                    - Only Private Key needs to be kept long term and kept securely
+        - PKI and Cloud
+            - So what has this got to do with Cloud…?
+                - IaaS – key pair!
+            - Cloud inter-operability begins with security!
+                - There is no single, ubiquitous CA, there are many
+            - There are many ways to prove your identity
+                - OpenId, FacebookId, Visa credit card for Amazon, …
+                    - Degrees of trust 
+                - But remember need for single sign-on
+                - Prove identity once and access distributed, autonomous resources!
+        - Public Key Certificates
+            - (PKC & PKI) Mechanism connecting public key to user with corresponding private key is Public Key Certificate 
+                - Public key certificate contains public key and identifies the user with the corresponding private key
+                    - Distinguished Name (DN): CN=Richard Sinnott; OU=Dept CIS; O=UniMelb; C=AU
+                - Not a new idea
+                    - Business card
+                        - My name, my association, contact details, …
+                            - Can be distributed to people I want to exchange info with
+                        - If include public key on it, then have basic certificate, but
+                            - has to be delivered in person (or no trust!), who says I work at Melbourne?, could be a forgery, I might be an impostor, what if I move to Monash or my phone number changes, who would have 1024-bit key on business card, …
+            - Public Key Certificates & Certification Authority
+                - Public Key Certificates issued by trusted "Certification Authority"
+        - Certification Authority
+            - What it it?
+                - <u>**Central component of PKI is Certification Authority (CA)**</u>
+            - CA has numerous responsibilities 
+                - <u>**Policy and procedures**</u>
+                    - How to’s, do’s and don’ts of using certificates 
+                    - Processes that should be followed by users, organisations, service providers …(and consequence for violating them!)
+            - challenge: 
                 - Issuing certificates
                     - Often need to delegate to local Registration Authority
                     - Prove who you are, e.g. with passport, student card
@@ -1541,13 +1618,13 @@ when the function is called less often
                     - Certificate Revocation List (CRL) for expired/compromised certificates
                 - Storing, archiving 
                     - Keeping track of existing certificates, various other information, …
-                - models
-                    - <img src="./docs/26.jpg" width="60%" height="50%" />
-                - Typical Simple CA
-                    - Based on statically defined centralised CA with direct single hierarchy to users
-                    - Typical scenario for getting a certificate
-                    - steps:
-                    - <img src="./docs/27.jpg" width="60%" height="50%" />
+            - models
+                - <img src="./docs/26.jpg" width="60%" height="50%" />
+            - Typical Simple CA
+                - Based on statically defined centralised CA with direct single hierarchy to users
+                - Typical scenario for getting a certificate
+                - steps:
+                - <img src="./docs/27.jpg" width="60%" height="50%" />
 - Authorisation
     - What is it?
         - Authorisation is concerned with controlling access to resources based on policy 
@@ -1560,23 +1637,6 @@ when the function is called less often
         |Role Based Access Control|RBAC
         |Identity Based Access Control|IBAC
         |Attribute Based Access Control|ABAC
-    - Authorisation and Clouds
-        - Authorisation typically applies to services/data deployed on Clouds, i.e. when they are running 
-        - But not only… 
-            - Who can install this patch, when can they do it, how many VMs will be affected if this happens…?
-            - Is this virtual image free of trojans, malware etc?
-            - Lots of tools to support this: Pakiti, Cfengine, Puppet, …
-            - Real challenge of software dependency management for complex systems
-                - Amazingly (?) most users/organisations do not patch!!! 
-                - Side-effects, complexities, stopping jobs, restarting jobs etc
-    - What does it do?
-        - Defining what they can do and define and enforce rules
-            - Each site will have different rules/regulations
-    - How it is achieved?
-        - Often realised through Virtual Organisations (VO)
-            - Collection of distributed resources shared by collection of users from one or more organizations typically to work on common research goal
-                - Provides conceptual framework for rules and regulations for resources to be offered/shared between VO institutions/members 
-                - Different domains place greater/lesser emphasis on expression and enforcement of rules and regulations (policies)
     - Many Technologies
         - XACML, PERMIS, CAS, VOMS, AKENTI, VOMS, SAML, WS-*
     - typical model: RBAC
@@ -1594,24 +1654,24 @@ when the function is called less often
                     - e.g. XML document, SAML, XACML, …
             - Standards on when/where these used (PEP) and enforced (PDP)
             - Policy engines consume this information to make access decisions
+    - Authorisation and Clouds
+        - Authorisation typically applies to services/data deployed on Clouds, i.e. when they are running 
+        - But not only… 
+            - Who can install this patch, when can they do it, how many VMs will be affected if this happens…?
+            - Is this virtual image free of trojans, malware etc?
+            - Lots of tools to support this: Pakiti, Cfengine, Puppet, …
+            - Real challenge of software dependency management for complex systems
+                - Amazingly (?) most users/organisations do not patch!!! 
+                - Side-effects, complexities, stopping jobs, restarting jobs etc
+    - What does it do?
+        - Defining what they can do and define and enforce rules
+            - Each site will have different rules/regulations
+    - How it is achieved?
+        - Often realised through Virtual Organisations (VO)
+            - Collection of distributed resources shared by collection of users from one or more organizations typically to work on common research goal
+                - Provides conceptual framework for rules and regulations for resources to be offered/shared between VO institutions/members 
+                - Different domains place greater/lesser emphasis on expression and enforcement of rules and regulations (policies)
     - Should all be transparent to end users!
     - Reflect needs and understanding of organisations involved!
-
-
-
-
-
-
-
-Consider the Passport vs Frequent Customer Shopping experience
-
-
-
-## recap
-recording 10 01:29:00
-
-
-
-
-
-
+    - Identity Provider
+        - The place you got authenticated
