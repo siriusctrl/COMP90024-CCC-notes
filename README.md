@@ -88,6 +88,35 @@
         - Refer to week 5
         - Cloud computing is a model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing resources(networks, servers, storage, applications, services) that can be rapidly provisioned and released with minimal management effort or service provider interaction.
 
+### past exam
+- > [sample Q2 A] Describe some of the current challenges associated with large-scale distributed systems. [4] 
+    - distributed systems sisn't solve data heterogeneity. And we have big data challenges.
+    - distributed systems has scalability and issues of fixed hardware system. We have distributed computers running on different hardware system.
+    - fault tolerance not solved
+        - Many diverse faults can happen with distributed systems
+            - , e.g. server failures or partial failures, network outages, overloading of components etc etc. 
+            - There is no simple solution to this that has been widely adopted/accepted.
+    - results in software stack
+        - Each system tends to develop its own technical solution
+            - , e.g. using queuing or having back-ups/failovers of system for failures. 
+            - This can result in complex software stacks and recipes that have to be cooked to address  specific needs/demands.
+    - (And all these erroneous assumption can't be made at week 2 last)
+    - The network is reliable
+    - Latency is zero
+    - Bandwidth is infinite - I can send any amount of data I wish between any nodes
+    - The network is secure
+    - Topology doesn't change - Node x is always there
+    - There is one administrator
+    - Transport cost is zero - I can send as much data as I like for free
+    - The network is homogeneous
+    - Time is ubiquitous - Clock is same across all computers in network
+- > [sample Q2 B] Cloud computing solves some of these issues but not all. Explain. [4]
+    - scalability and elastic scaling (purchase cloud when you need its service)
+    - software deployment easier as we have snapshots/scripted deployment
+    - more tools available, e.g.: load balancers, proven solutions. You might not have this much in distributed system
+    - data centers better networked. they are targeted to solve your problems
+    - geospatially distributed and easy to migrate application
+    - doesn't address many of the above though (但并没有解决上面的很多问题) (bandwidth from user/organization to data center)
 
 ## Week2 - Domain Drivers – tour of some big data projects
 1. compute scaling
@@ -373,6 +402,13 @@
         -  Mapping/Scheduling
             - (design to be able to scale up/down) Assign tasks to processors such that job completion time is minimized and resource utilization is maximized
 
+### past exam
+- > [sample Q5] A) Explain Amdahl's law and discuss the challenges of its practical implementation. [2]
+    - Program always bound by limitations caused by sequential part.
+    - no matter how mang cores thrown at problem will be limited to the sequential part of the algorithm. 
+        - Also inlcudes overheads required to deal with parallelism (loops, variables, communications)
+
+
 ## Week4 - The Spartan HPC System
 - Some background on supercomputing, high performance computing, parallel computing, research computing (they're not the same thing!).
     - Supercomputer
@@ -401,12 +437,40 @@
     - Modularity of code and components
     - Readability of code and hardware documentation
     - Compatibility of code and hardware
+4. x-windows forwarding
+    - allows you to start up a remote application (on Spartan) but forward the display to your local machine.
 - Why performance and scale matters, and why it should matter to you.
 - An introduction to Spartan, University of Melbourne's HPC/cloud hybrid system
 - Logging in, help, and environment modules.
 - Job submission with Slurm workload manager; simple submissions, multicore, multi-node, job arrays, job dependencies, interactive jobs.
 - Parallel programming with shared memory and threads (OpenMP) and distributed memory and message passing (OpenMPI)
 - Tantalising hints about more advanced material on message passing routines.
+
+### past exam
+- > [sample Q5] B) The actual performance as experienced by users of shared-access HPC facilities such as the Edward cluster at the University of Melbourne can vary – where here performance can be considered as the throughput of jobs, i.e. from the time of first job submission to the time of last job completion. Explain why this can happen. [2]
+    - Stuck in queue
+    - Overall usage of facility (some nodes can be super busy)
+        - e.g.: I/O or node load
+    - not all nodes are identical
+    - the nature of the application itself
+- > [sample Q5] C) Explain how the Edward cluster has been set up to minimize this. [2]
+    - Stuck in queue: Multiple queues dedicated to certain jobs
+        - e.g.: Cloud, physical, ...
+    - Overall usage of facility (some nodes can be super busy): Queueing system to only schedule jobs when resources free
+        - (avoid starvation/blocking of system by users with large reservation demands for their jobs)
+    - Modules set uo with main libraries installed
+- > [sample Q5] D) Explain what users can do to optimize their throughput (use) of the Edward cluster. [2]
+    - wall time choices (minimal necessary)
+        - If large, then job might be queued in a longer time it actually needs
+    - avoid demanding large scale resource
+    - Load right modules
+    - benchmark small data then scale up to appropriate large value
+- > [sample Q5] E) Describe some of the challenges with application benchmarking on HPC facilities. [2]
+    - Shared facility is not just for you. Thus, can't guarantee runs the same results for same application
+    - benchmarking apps is hard
+        - different alogrithm implementation different performance
+    - use Linpack which is a fixed set of algorithms that doesn't reflect real world apps
+        - e.g.: Twitter analytics
 
 ## Week5 - Cloud Computing & ~~Getting to Grips with the University of Melbourne Research Cloud~~
 Cloud computing is a model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing resources (e.g., networks, servers, storage, applications, and services) <u>that can be rapidly provisioned and released with minimal management effort or service provider interaction</u> 可以通过最少的管理工作或服务提供者交互从而可以快速地配置和发布
@@ -426,6 +490,11 @@ Cloud computing is a model for enabling ubiquitous, convenient, on-demand networ
     | | Iaas| Paas|Saas|
     |---|---|---|---|
     | example| Amazon Web Services<br>Oracle Public Cloud<br>NeCTAR| Azure| Gmail|
+
+### past exam
+- > [sample Q2 C] What are availability zones in NeCTAR and what restrictions do they impose on NeCTAR Cloud-based application developers? [2]
+    - availability zone: locations of data centers used to provide logical view of cloud
+    - restriction: can't mount volumes to VMs in remote locations. If you have computer in Melbourne, you can't have your storage somewhere else in a different availability zone and you can't mount that volume.
 
 ## Workshop week5: Auto-Deployment -- Ansible
 - Reason for auto-deployment (**comparison**)
@@ -463,6 +532,32 @@ Cloud computing is a model for enabling ubiquitous, convenient, on-demand networ
       - Dynamic inventory from external data sources
       - Execute tasks against host patterns
     - Ansible Vault for encryption
+
+### past exam
+- > [Sample Q1] Applications can be deployed across Clouds either through creation and deployment of virtual images (snapshots) or through scripting the installation and configuration of software applications.
+    - > What are the benefits and drawbacks of these approaches? [3]
+        - Snapshots
+            - benefits
+                - Snapshots are easy, can be created just by clicking buttons on dashboard
+            - drawbacks
+                - No history of how the instance built
+        - Scripting
+            - benefits
+                - Scripting allows to do much more 
+                    - start application
+                    - configure application
+                    - deploy application
+                    - upgrade system
+                    - thus, have more controll over the system
+                - Scripting has complete record of how to build and deploy
+            - drawbacks
+                - harder compared to clicking buttons in Snapshots
+    - > Discuss the mechanisms used to support these approaches. You may refer to specific tools used to support these processes on the NeCTAR Research Cloud. [3]
+        - openstack API (Nova/Glance/Swift/etc)
+        - openstack Service (Heat/etc)
+            - templates the flavor of deployment
+                - e.g.: specify the version of Ubuntu used
+        - Ansible scripting allows to automate software deployment including tasks/role
 
 ## Week 6 – Web Services, ReST Services ~~and Twitter demo~~
 
@@ -657,133 +752,6 @@ Representational State Transfer (ReST) is intended to evoke an image of how a we
     - **Neither**
         - POST
 
-## Workshop week6: Containerization and docker
-### Virtualization vs Containerization
-- Virtualization
-  - Pros
-    - Application containment
-    - Horizontal scalability
-  - Cons
-    - The guest OS and binaries can give rise to duplications between VMs wasting server processors, memory and disk space and limiting the number of VMs each server can support -> virtualization overhead
-- Containerization
-  - Pros
-    - It allows virtual instances to share a single host OS (and associated drivers, binaries, libraries) to reduce these wasted resources since each container only holds the application and related binaries. The rest are shared among the containers.
-- |Parameter | Virtual Machines                                             | Container                                     |
-  | ------------- | ------------------------------------------------------------ | --------------------------------------------- |
-  | Guest OS      | Run on virtual Hardware, have their own OS kernels           | Share same OS kernel                          |
-  | Communication | Through Ethernet devices                                     | IPC mechanisms (pipes, sockets)               |
-  | Security      | Depends on the Hypervisor                                    | Requires close scrutiny                       |
-  | Performance   | Small overhead incurs when instructions are translated from guest to host OS | Near native performance                       |
-  | Isolation     | File systems and libraries are not shared between guest and host OS | File systems can be shared, and libraries are |
-  | Startup time  | Slow (minutes)                                               | Fast (a few seconds)                          |
-  | Storage       | Large                                                        | Small (most are reusable)                     |
-
-- In real world they can co-exist
-  - When deploying applications on the cloud, the base computation unit is a Virtual Machine. Usually Docker containers are deployed on top of VMs.
-- Containers not always better
-  - It depends on: 
-    - The size of the task on hand
-    - The life span of the application
-    - Security concerns
-    - Host operation system
-
-### What is Container?
-- Similar concept of resources isolation and allocation as a virtual machine
-- Without bundling the entire hardware environment and full OS
-- What container runtimes are in use?
-  - Docker
-    - The leading software container platform
-  - Containerd
-  - cri-o
-  
-### Docker
-  - What is it?
-    - the most successful containerization technology.
-  - Docker Nomenclature
-    - Container: a process that behaves like an independent machine, it is a runtime instance of a docker image.
-    - Image: a blueprint for a container.
-    - Dockerfile: the recipe to create an image.
-    - Registry: a hosted service containing repositories of images. E.g., the Docker Hub (https://hub.docker.com)
-    - Repository: is a sets of Docker images.
-    - Tag: a label applied to a Docker image in a repository.
-    - Docker Compose: Compose is a tool for defining and running multi-containers Docker applications. 
-    - Docker SWARM: a standalone native clustering / orchestration tool for Docker.
-  - Manage Data in Docker
-    - By default, data inside a Docker container won’t be persisted when a container is no longer exist.
-    - You can copy data in and out of a container.
-    - Docker has two options for containers to store files on the host machine, so that the files are persisted even after the container stops.
-      - Docker volumes (Managed by Docker, /var/lib/docker/volume/)
-      - Bind mounts (Managed by user, any where on the file system)
-  - different networking options
-    - host: every container uses the host network stack; which means all containers share the same IP  address, hence ports cannot be shared across containers
-    - bridge: containers can re-use the same port, as  they have different IP addresses, and expose a port of their own  that belongs to the hosts, allowing the containers to be somewhat visible from the outside.
-
-### Dockerfile
-  - ```
-    FROM nginx:latest
-
-    ENV WELCOME_STRING "nginx in Docker"
-
-    WORKDIR /usr/share/nginx/html
-
-    COPY ["./entrypoint.sh", "/"]
-
-    RUN cp index.html index_backup.html; \
-            chmod +x /entrypoint.sh; \
-            apt-get update && apt-get install -qy vim
-    # above run at build time
-    # below run at start up
-
-    ENTRYPOINT ["/entrypoint.sh"]
-    CMD ["nginx", "-g", "daemon off;"]
-    ```
-  - ENTRYPOINT
-    - ENTRYPOINT gets executed when the container starts. CMD specifies arguments that will be fed to the ENTRYPOINT.
-    - Unless it is overridden, ENTRYPOINT will always be executed.
-
-
-
-### What are Orchestration Tools?
-- Container orchestration technologies provides a framework for integrating and managing containers **<u>at scale</u>**
-- Goals
-  - Simplify container management process
-  - Help to manage availability and scaling of containers
-- Features
-  - Networking
-  - Scaling
-  - Service discovery and load balancing
-  - Health check and self-healing
-  - Security
-  - Rolling update
-- Tools
-  - Kubernetes and Hosted Kubernetes
-  - Docker SWARM / Docker Compose
-  - OpenShift
-
-### Docker SWARM
-- What is Docker SWARM (the correct name: Docker in SWARM mode)? 
-  - It is a Docker orchestration tool.
-- Why Docker SWARM?
-  - Hundreds of  containers to manage?
-  - Scalability
-  - Self-healing
-  - Rolling updates
-- Features
-  - Raft consensus group
-    - consists of internal distributed state store and all manager nodes. 
-  - Internal Distributed State Store
-    - built-in key-value store of Docker Swarm mode.
-  - Manager Node 
-    - It conducts orchestration and management tasks. Docker Swarm mode allows multiple manager nodes in a cluster. However, only one of the manager nodes can be selected as a leader. 
-  - Worker Node 
-    - receives and executes tasks directly from the manager node
-  - Node Availability
-    - In Docker Swarm mode, all nodes with ACTIVE availability can be assigned new tasks, even the manager node can assign itself new tasks (unless it is in DRAIN mode)
-  - Service 
-    - consists of one or more replica tasks which are specified by users when first creating the service.
-  - Task
-    - A task in Docker Swarm mode refers to the combination of a single docker container and commands of how it will be run. 
-
 
 ## Week 7 – Big Data and CouchDB
 ### "Big data" challenges and architectures
@@ -826,8 +794,8 @@ Representational State Transfer (ReST) is intended to evoke an image of how a we
 
         |||
         |---|---|
-        |Consistency|every client receiving an answer receives **the same answer** from all nodes in the cluster
-        |Availability|every client receives **an answer** from any node in the cluster 
+        |Consistency|every client receiving an answer receives **the same answer** from all nodes in the cluster (it doesn't depend on which node is quired)
+        |Availability|every client receives **an answer** from any node in the cluster (which might differ from node to node)
         |Partition-Tolerance|the cluster **keeps on operating** when one or more nodes cannot communicate with the rest of the cluster
     - Brewer’s CAP Theorem: you can only pick any two of Consistency, Availability and Partition-Tolerance.
         - <img src="./docs/13.jpg" width="30%" height="50%" />
@@ -998,6 +966,244 @@ Representational State Transfer (ReST) is intended to evoke an image of how a we
 ### Introduction to CouchDB
 - Part 2: Introduction to CouchDB, recording 07:: 01:15:16
 
+### past exam
+- > [sample Q4] A) In the context of distributed databases, explain the concepts of: 
+    - > Consistency [1]
+        - every client receiving an answer receives **the same answer** from all nodes in the cluster (it doesn't depend on which node is quired)
+    - > Availability [1]       
+        - every client receives **an answer** from any node in the cluster (which might differ from node to node)
+- > [sample Q4] B) Give an example of a database technology that supports Availability in the presence of a (network) partition.  [1]
+    - Multi-Version Concurrency Control (MVCC)
+- > [sample Q4] C) In the context of CouchDB clusters what is the meaning of:
+    - > Replica number [1]
+        - Number of copies of the same shard kept in the cluster
+    - > Number of shards [1]
+        - Number of horizontal partitions of the cluster
+    - > Read quorum [1]
+        - Minumum number of nodes that have to give the same result to a read operation for it to be declared valid and sent back to the client
+    - > Write quorum [1]
+        - Minumum number of nodes that have to occur for a write operation for it to be accepted
+
+## Workshop week6: Containerization and docker
+### Virtualization vs Containerization
+- Virtualization
+  - Pros
+    - Application containment
+    - Horizontal scalability
+  - Cons
+    - The guest OS and binaries can give rise to duplications between VMs wasting server processors, memory and disk space and limiting the number of VMs each server can support -> virtualization overhead
+- Containerization
+  - Pros
+    - It allows virtual instances to share a single host OS (and associated drivers, binaries, libraries) to reduce these wasted resources since each container only holds the application and related binaries. The rest are shared among the containers.
+- |Parameter | Virtual Machines                                             | Container                                     |
+  | ------------- | ------------------------------------------------------------ | --------------------------------------------- |
+  | Guest OS      | Run on virtual Hardware, have their own OS kernels           | Share same OS kernel                          |
+  | Communication | Through Ethernet devices                                     | IPC mechanisms (pipes, sockets)               |
+  | Security      | Depends on the Hypervisor                                    | Requires close scrutiny                       |
+  | Performance   | Small overhead incurs when instructions are translated from guest to host OS | Near native performance                       |
+  | Isolation     | File systems and libraries are not shared between guest and host OS | File systems can be shared, and libraries are |
+  | Startup time  | Slow (minutes)                                               | Fast (a few seconds)                          |
+  | Storage       | Large                                                        | Small (most are reusable)                     |
+
+- In real world they can co-exist
+  - When deploying applications on the cloud, the base computation unit is a Virtual Machine. Usually Docker containers are deployed on top of VMs.
+- Containers not always better
+  - It depends on: 
+    - The size of the task on hand
+    - The life span of the application
+    - Security concerns
+    - Host operation system
+
+### What is Container?
+- Similar concept of resources isolation and allocation as a virtual machine
+- Without bundling the entire hardware environment and full OS
+- What container runtimes are in use?
+  - Docker
+    - The leading software container platform
+  - Containerd
+  - cri-o
+  
+### Docker
+  - What is it?
+    - the most successful containerization technology.
+  - Docker Nomenclature
+    - Container: a process that behaves like an independent machine, it is a runtime instance of a docker image.
+    - Image: a blueprint for a container.
+    - Dockerfile: the recipe to create an image.
+    - Registry: a hosted service containing repositories of images. E.g., the Docker Hub (https://hub.docker.com)
+    - Repository: is a sets of Docker images.
+    - Tag: a label applied to a Docker image in a repository.
+    - Docker Compose: Compose is a tool for defining and running multi-containers Docker applications. 
+    - Docker SWARM: a standalone native clustering / orchestration tool for Docker.
+  - Manage Data in Docker
+    - By default, data inside a Docker container won’t be persisted when a container is no longer exist.
+    - You can copy data in and out of a container.
+    - Docker has two options for containers to store files on the host machine, so that the files are persisted even after the container stops.
+      - Docker volumes (Managed by Docker, /var/lib/docker/volume/)
+      - Bind mounts (Managed by user, any where on the file system)
+  - different networking options
+    - host: every container uses the host network stack; which means all containers share the same IP  address, hence ports cannot be shared across containers
+    - bridge: containers can re-use the same port, as  they have different IP addresses, and expose a port of their own  that belongs to the hosts, allowing the containers to be somewhat visible from the outside.
+
+### Dockerfile
+  - ```
+    FROM nginx:latest
+
+    ENV WELCOME_STRING "nginx in Docker"
+
+    WORKDIR /usr/share/nginx/html
+
+    COPY ["./entrypoint.sh", "/"]
+
+    RUN cp index.html index_backup.html; \
+            chmod +x /entrypoint.sh; \
+            apt-get update && apt-get install -qy vim
+    # above run at build time
+    # below run at start up
+
+    ENTRYPOINT ["/entrypoint.sh"]
+    CMD ["nginx", "-g", "daemon off;"]
+    ```
+  - ENTRYPOINT
+    - ENTRYPOINT gets executed when the container starts. CMD specifies arguments that will be fed to the ENTRYPOINT.
+    - Unless it is overridden, ENTRYPOINT will always be executed.
+
+
+
+### What are Orchestration Tools?
+- Container orchestration technologies provides a framework for integrating and managing containers **<u>at scale</u>**
+- Goals/benefits
+  - Simplify container management process
+  - Help to manage availability and scaling of containers
+- Features
+  - Networking
+  - Scaling
+  - Service discovery and load balancing
+  - Health check and self-healing
+  - Security
+  - Rolling update
+- Tools
+  - Kubernetes and Hosted Kubernetes
+  - Docker SWARM / Docker Compose
+  - OpenShift
+
+### Docker SWARM
+- What is Docker SWARM (the correct name: Docker in SWARM mode)? 
+  - It is a Docker orchestration tool.
+- Why Docker SWARM?
+  - Hundreds of  containers to manage?
+  - Scalability
+  - Self-healing
+  - Rolling updates
+- Features
+  - Raft consensus group
+    - consists of internal distributed state store and all manager nodes. 
+  - Internal Distributed State Store
+    - built-in key-value store of Docker Swarm mode.
+  - Manager Node 
+    - It conducts orchestration and management tasks. Docker Swarm mode allows multiple manager nodes in a cluster. However, only one of the manager nodes can be selected as a leader. 
+  - Worker Node 
+    - receives and executes tasks directly from the manager node
+  - Node Availability
+    - In Docker Swarm mode, all nodes with ACTIVE availability can be assigned new tasks, even the manager node can assign itself new tasks (unless it is in DRAIN mode)
+  - Service 
+    - consists of one or more replica tasks which are specified by users when first creating the service.
+  - Task
+    - A task in Docker Swarm mode refers to the combination of a single docker container and commands of how it will be run. 
+
+### past exam
+- > [Sample Q1] Applications can be deployed across Clouds either through creation and deployment of virtual images (snapshots) or through scripting the installation and configuration of software applications.
+    - > Container based solutions such as Docker have advantages and disadvantages compared to traditional Cloud-based virtualization solutions based upon hypervisors. Discuss. [4]
+        - Guest OS
+            - Running on virtual Hardware will have their own OS kernels, thus introduce virtualization overhead. While container allows virtual instances to share a single host OS to reduce these wasted resources
+        - Communication
+            - Virulization communicate through Ethernet devices. Container communicate through IPC mechanisms
+        - Security
+            - Virulization depends on the Hypervisor. Container requires close scrutiny.
+        - Performance
+            - Virulization has small overhead incurs when instructions are translated from guest to host OS. Container have near native performance.
+        - Isolation
+            - Virulization has file systems and libraries are not shared between guest and host OS. Container has file systems and libraries can be shared.
+        - Startup time 
+            - Virulization's startup time is slow. Container's startup time is fast.
+        - Storage
+            - Virulization's requires storage space is large. Container's requires storage space is small and most are reusable.
+        - (Virtualization vs Containerization table above)
+- > [sample Q6] A)  What are container orchestration technologies? What are the main benefits of using container orchestration tools? Name two of the most popular Docker orchestration tools?                [3]
+    - Container orchestration technologies provides a framework for integrating and managing containers **<u>at scale</u>**
+    - benefits
+        - Simplify container management process
+        - Help to manage availability and scaling of containers
+    - Docker orchestration tools
+        - Kubernetes
+        - Docker SWARM
+    
+
+- > [sample Q6] B)  A researcher wants to attach to an already running Postgresql container and list all of the databases it contains. The command to list all of the database is psql -U postgres -c “\l”. The name of the container is postgres and it exposes the port 5432 to the host. Is the following command correct? If not, please correct it:                     docker exec -p 5432 --name postgres sh -c psql -U postgres -c “\l”             [3]    
+    - docker exec -t postgres sh -c "psql -U postgres -c \"\I\""
+    - docker exec -t postgres psql -U postgres -c "\I"
+
+- > [sample Q6] C) The following Docker compose file starts two Docker containers that are used to run a WordPress website. What are the equivalent Docker commands that could be used to start these two containers individually?   [4]
+    ```
+    version: '3.6'
+
+    services:
+
+    wordpress:
+
+        image: wordpress
+
+        restart: always
+
+        ports:
+
+        - 8080:80
+
+        environment:
+
+        WORDPRESS_DB_HOST: database
+
+        WORDPRESS_DB_USER: wordpress
+
+        WORDPRESS_DB_PASSWORD: wordpress
+
+        WORDPRESS_DB_NAME: wordpress
+
+    database:
+
+        image: mysql:5.7
+
+        restart: always
+
+        environment:
+
+        MYSQL_DATABASE: wordpress
+
+        MYSQL_USER: wordpress
+
+        MYSQL_PASSWORD: wordpress
+
+        MYSQL_ROOT_PASSWORD: P@ssw0rd
+
+        volumes:
+
+        - /data/mysql:/var/lib/mysql
+    ```
+    - ```
+        docker run -e WORDPRESS_DB_HOST=database \
+        -e WORDPRESS_DB_USER=wordpress \
+        -e WORDPRESS_DB_PASSWORD=wordpress \
+        -e WORDPRESS_DB_NAME=wordpress \
+        -p 8080:80 --restart always wordpress
+        ```
+    - ```
+        docker run -e MYSQL_DATABASE=wordpress \
+        -e MYSQL_USER=wordpress \
+        -e MYSQL_PASSWORD=wordpress \
+        -e MYSQL_ROOT_PASSWORD=P@ssw0rd \
+        -v /data/mysql:/var/lib/mysql \
+        -d --restart always mysql:5.7
+        ```
 
 ## Week 8.1 – Virtualisation
 Terminology
@@ -1127,7 +1333,7 @@ Terminology
       - Accepts network tasks from queue and manipulates network, e.g. changing IP table rules
 #### Swift - Object Storage
 - Stores and retrieves arbitrary unstructured data objects via ReSTful API
-  - VM images and data
+  - e.g.: VM images and data
   - This service can be used to access arbitrary unstructured data
 - Fault tolerant with data replication and scale-out architecture
   - Available from anywhere; persists until deleted
@@ -1163,8 +1369,9 @@ Terminology
   - Network in and out
   - Network security group
 - Offers an API for users to define networks and the attachments into them,
-  - switches
-  - routers
+    - e.g.: 
+        - switches
+        - routers
 - Pluggable architecture that supports multiple networking vendors and technologies
 - Neutron-server
   - accepts and routes API requests to appropriate plug-ins for action
@@ -1215,13 +1422,43 @@ Terminology
 4. Make sure rollback checkbox is marked, so if anything goes wrong, all partially created resources get dumped too
 5. Wait for the magic to happen! 
 
+### past exam
+- > [sample Q3 A] The NeCTAR Research Cloud is based on the OpenStack technology. Describe the role and features of the following OpenStack components:
+    - Nova    [1] (one of below)
+        - Manages the lifecycle of compute instances in an OpenStack environment
+        - Responsibilities for virtual machines on demand, include spawning, scheduling and decommissioning
+    - Horizon [1]
+        - Provides a web-based self-service portal to interact with underlying OpenStack services, such as launching an instance, assigning IP addresses and configuring access controls.
+    - Heat    [1]
+        - Template-driven service to manage lifecycle of applications deployed on Openstack
+    - Glance [1]
+        - Accepts requests for disk or server images and their associated metadata (from **<u>Swift</u>**) and retrieves / installs (through **<u>Nova</u>**)
+    - Swift    [1]
+        - Stores and retrieves arbitrary unstructured data objects via ReSTful API, e.g.: VM images and data
+    - Keystone [1]
+        - Provides an authentication and authorization service fro OpenStack services
+        - Tracks users/permissions
+        - Provides a catalog of endpoints for all OpenStack services
+    - Neutron [1]
+        - Supports networking of OpenStack services
+        - Offers an API for users to define networks and the attachments into them, e.g.:  switches, routers
+        - Port management, e.g. default SSH, VM-specific rules, ...
+- > [sample Q3 B]  Describe the interplay between these components that allows a researcher to create an instance of a virtual machine through a pre-existing snapshot from a non-public NeCTAR Cloud image, e.g. a snapshot created by a user. [3]
+    - Authenticate via Keystone. provide unimelb id and password for MRC. And Keystone identity enable us to use other components in the system so that the system knows that's us using them.
+    - Daemon that creates/terminates VMs through hypervisor APIs via Nova-computer
+    - schedules VM instance requests from queue and determines which server host to run via Nova-scheduler
+    - Mediates interactions between compute services and other components, e.g. image database via Nova-conductor
+    - looking up resoueces required via Swift/Glance
+    - preparing the VM on machine required
+    
+
 
 ## Week 8.3 - Serverless (Function as a Service (FaaS))
 1. Why Functions?
     - A function in computer science is typically a piece of code that takes in parameters and returns a value
     - Functions are the founding concept of functional programming - one of the oldest programming paradigms
     - Why they are used in Faas?
-    - Functions
+    - Functions in server less comuting are:
         - free of side-effects, 
             - What is it?
                 - A function that does not modify the state of the system
@@ -1285,19 +1522,49 @@ Terminology
     - proprietary FaaS services v.s. open-source FaaS frameworks
         - open-source FaaS frameworks can be deployed on your cluster, peered into, disassembled, and improved by you.
 
-## Workshop week5: OpenFaaS
+### past exam
+- > [sample Q7] A) In the context of Cloud, what is meant by serverless computing? [1]
+    - A way of developing applications as **collections of functions** that are deployed on a computing infrastructure without the need to manage it.
+- > [sample Q7] B) List three reasons why it may be beneficial to choose a serverless solution. [3]
+    - |Reason|How|
+        |---|---|
+        |Simpler deployment|the service provider takes care of the infrastructure
+        |Reduced computing costs|only the time during which functions are executed is billed
+        |Reduced application complexity|due to loosely-coupled architecture
+        - "Why we need Faas?" above
+- > [sample Q7] C) Discuss the role of functions in serverless computing. Your answer should include key properties of functions that make them suitable for serverless environments.  [3]
+    - Serverless applications are composed of functions
+    - key properties of functions that make them suitable for serverless environments:
+        - Functions in server less comuting are:
+            - free of side-effects
+            - ephemeral
+            - stateless
+            - which make them ideal for 
+                - parallel execution and 
+                - rapid scale up and scale down
+        - Functions are triggered by events
+        - Functions can call each other
+
+## Workshop week8: OpenFaaS
 ### Properties
-- Open-source framework that uses Docker containers to deliver FaaS functionality
-- Every function in OpenFaaS is a Docker container, ensuring loose coupling between functions
-  - Function can be written in different languages and mixed freely
 - Functions are passed a request as an object in the language of choice and return a response as an object
-- OpenFaaS can use either Docker Swarm or Kubernetes to manage cluster of nodes on which functions run
-- By using Docker containers as functions, OpenFaaS allow to freely mix different languages and environments at the cost of **<u>decreased performance</u>** as containers are inherently heavier than threads
-  - However, it is possible to reduce the size to only a few MBs
+- OpenFaaS \& container
+    - Open-source framework that uses Docker containers to deliver FaaS functionality
+    - role of container technologies and their relationship with functions:
+        - Every function in OpenFaaS is a Docker container, ensuring loose coupling between functions
+            - Function can be written in different languages and mixed freely
+    - OpenFaaS can use either Docker Swarm or Kubernetes to manage cluster of nodes on which functions run
+    - By using Docker containers as functions, OpenFaaS allow to freely mix different languages and environments at the cost of **<u>decreased performance</u>** as containers are inherently heavier than threads
+        - However, it is possible to reduce the size to only a few MBs
 ### Auto-scalability and OpenFaaS
-- OpenFaaS can add more Docker containers when a function is called more often, and remove containers
-when the function is called less often 
+- OpenFaaS can add more Docker containers when a function is called more often, and remove containers when the function is called less often 
 - The scaling-up (and down) of functions can be tied to memory or CPU utilization as well (currently only on Kubernetes-managed clusters though)
+
+### past exam
+- > [sample Q7] D) OpenFaaS is an open source framework that can be used to deliver serverless computing solutions. Discuss the role of container technologies such as Docker in OpenFaaS and their relationship with functions and how they might be used to support auto-scaling.  [3]
+    - Every function in OpenFaaS is a Docker container, ensuring loose coupling between functions
+    - When the load increases, OpenFaaS add more container executing the same function.
+    - When the load decreases, OpenFaaS remove containers for the function is called less often.
 
 ## Week 9 - Big Data Analytics
 1. Why we need it?
@@ -1440,6 +1707,17 @@ when the function is called less often
     - How to Build an RDD?
         - created out of data stored elsewhere (HDFS, a local text file, a DBMS)
         - created out of collections too, using the parallelize function
+
+### past exam
+- > [sample Q4] D) Describe the three different Apache SPARK runtime modes:    
+    - > Local [1]
+        - The driver program and the executors are all hosted on the same computer (no need for a cluster manager).
+        - The Spark appplication is hosted on the same computer.
+    - > Cluster [1]
+        - The cluster manager, driver program and the executors are all hosted on the cluster.
+        - The cluster manager and Spark appplication is hosted on the cluster.
+    - > Client [1]
+        - The driver program is hosted on the same computer that is not part of the cluster, while the cluster manager and executors are hosted on the cluster.
 
 ## Week 10.1 – Security and Clouds
 1. Why is security so important?
