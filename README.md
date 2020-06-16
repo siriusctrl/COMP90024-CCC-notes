@@ -89,8 +89,17 @@
         - Cloud computing is a model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing resources(networks, servers, storage, applications, services) that can be rapidly provisioned and released with minimal management effort or service provider interaction.
 
 ### past exam
+- > [2013 Q1] A) Explain what is meant by the terms:
+    - > Grid Computing [1]
+        - focus on organizational collaboration, coordination, activity and technologies to doing it
+    - > Cluster Computing [1]
+        - multiple servers rach-mounted which are accessible and you can run jobs across the cluster
+    - > Cloud Computing [1]
+        - is a model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing resources(networks, servers, storage, applications, services) that can be rapidly provisioned and released with minimal management effort or service provider interaction.
+- > [2013 Q1, 2017 Q1 B [5]] B) Current Cloud Computing systems do not solve many key challenges of large-scale distributed systems. Discuss. [7]
+    - by below
 - > [sample Q2 A] Describe some of the current challenges associated with large-scale distributed systems. [4] 
-    - distributed systems sisn't solve data heterogeneity. And we have big data challenges.
+    - distributed systems didn't solve data heterogeneity. And we have big data challenges.
     - distributed systems has scalability and issues of fixed hardware system. We have distributed computers running on different hardware system.
     - fault tolerance not solved
         - Many diverse faults can happen with distributed systems
@@ -117,6 +126,12 @@
     - data centers better networked. they are targeted to solve your problems
     - geospatially distributed and easy to migrate application
     - doesn't address many of the above though (但并没有解决上面的很多问题) (bandwidth from user/organization to data center)
+- > [2015 Q1] A) Describe some of the erroneous assumptions that are often made in designing large-scale distributed systems. [5]
+    - above
+- > [2014 Q1] A) Discuss the major trends in research and research computing over the last 20 years that have led to the emergence of Cloud computing. [6]
+    - main frames to move to the distributed system
+    - the evolution of the internet
+    - distributed system move back to the centralised system
 
 ## Week2 - Domain Drivers – tour of some big data projects
 1. compute scaling
@@ -159,6 +174,19 @@
     - Electronics
     - Arts and humanities
     - Life sciences
+        - Extensive Research Community
+            - Parkville Precinct for example
+        - Many people care about them
+            - Health, Food, Environment – truly interdisciplinary!
+        - Interacts with virtually every discipline
+            - Physics, Chemistry, Maths/Stats, Nano-engineering, …
+        - Thousands of databases relevant to bioinformatics (and growing!)
+            - Heterogeneity, Interdependence, Complexity, Change, …
+        - Some of the Big Questions/Challenges
+            - How does a cell work?
+            - How does a brain work?
+            - How does an organism develop?
+            - Why do people who eat less tend to live longer?
     - Social sciences
         - Aurin
     - Clinical sciences
@@ -169,6 +197,23 @@
     - social
     - geographical
     - Genome
+    - Hierarchical statistical system simulations 
+        - Very large device and circuit simulations
+            - 3D devices
+            - 10^5 circuit components
+        - Large statistical samples
+            - 1000 - 100000 3D simulations 
+            - 4D 1000 - 100000 circuit simulations
+        - Complex flow and storage of data
+            - Many files per simulation
+            - Metadata capture and data provenance
+        - Collaboration between 5 partners
+            - Multidisciplinary background
+            - Complex data exchange 
+        - Stringent security requirements
+            - Commercial IP
+            - Expensive software licenses
+
 5. challenges are shaping the technological landscape
     - Challenges happen in multiple perspectives in research domains. - Big data - Big compute - Big distribution - Big collaboration - Big security
     - Tools, technologies and methodologies have been/can/are evolving to tackle these challenges
@@ -372,7 +417,7 @@
                 - 3 operations: split, compute, and join
                 - Master-worker/task-farming is like divide and conquer with master doing both split and join operation
                 - <img src="./docs/7.jpg" width="20%" height="50%" />
-            - Single-Program Multiple-Data (SPMD)
+            - Single Program Multiple Data (SPMD)
                 - Each process executes the same piece of code, but on different parts of the data
                 - Data is typically split among the available processors
                 - Data splitting and analysis can be done in many ways
@@ -407,7 +452,42 @@
     - Program always bound by limitations caused by sequential part.
     - no matter how mang cores thrown at problem will be limited to the sequential part of the algorithm. 
         - Also inlcudes overheads required to deal with parallelism (loops, variables, communications)
+- > [2014 Q4] A) Define Gustafson-Barsis’ law for scaled speed-up of parallel programs. [2]
+    - Gustafson-Barsis’s Law suggests that with enough processors and remaining tasks, speed up will always meet the requirement. Faster (more parallel) equipment available, larger problems can be solved in the same time.
+- > [2014 Q4] B) A parallel program takes 128 seconds to run on 32 processors. The total time spent in the sequential part of the program is 12 seconds. What is the scaled speedup? [2]
+    - S(N) = N - alpha * (N - 1) where N = n processors, alpha = time on sequential / time on parallel
+    - S(N) = 32 - (12/128) * (32-1) = 931/32 = 29.09375
+- > [2014 Q4] C) According to Gustafson-Barsis’ law, how much faster could the application _theoretically_ run if it ran across all 32 processors compared to running on a single processor? [3]
+    - we know from b/ that it (theoretically) runs 29.09375 times faster using 32 processors compared to running on a single processor. 
+    - If it takes 128 seconds with the 32 processor case then it would (theoretically) take 29.09375*128 = 3724 seconds in the single processor case.
+- > [2014 Q4] D) Why is theoretically italicized in the above? [3]
+    - you are not factoring the overheads dealing with the scalling system. If you have parallel processing, this can carry additional overheads, e.g. loops, communications, variables introduced to deal with parallel aspects. While you don't have this overheads in sequential programs.
 
+- > [2014 Q3] A) What is Flynn’s Taxonomy? [2]
+    - |               | Simple Instruction | Multiple Instruction |
+        | ------------- | ------------------ | -------------------- |
+        | Single Data   | SISD               | MISD                 |
+        | Multiple Data | SIMD               | MIMD                 |
+
+    - > a. What have been the implications of Flynn’s taxonomy on modern computer architectures?  
+    Give examples of its consequences on modern multi-core servers and clusters of servers such as the University of Melbourne Edward HPC facility. [4]
+        - The HPC uses MIMD so you can have multiple applications running at the same time, reading/writing/processing multiple different types of data but still on the same cluster
+- > [2015 Q4] A) Explain the following terms in the context of high performance computing.
+    - > a. Data parallelization [1]
+        - problem like you have a large amount of data But you need to process, analysis and aggregrate  in a small amount in a parallel way.
+    - > b. Compute parallelization [1]
+        - many processes and many threads for process things concurrently
+- > [2015 Q4] D) Compute parallelization of an application can be achieved through a variety of paradigms including task farming and single program multiple data. Describe these approaches and explain when they might best be applied. [3]
+    - Master-Worker/task-farming
+        - Master decomposes the problem into small tasks
+        - distributes to workers and gathers partial results to produce the result
+        - Master-worker/task-farming is like divide and conquer with master doing both split and join operation
+    - Single Program Multiple Data (SPMD)
+        - Each process executes the same piece of code, but on different parts of the data
+        - Data is typically split among the available processors
+        - Data splitting and analysis can be done in many ways
+        - Commonly exploited model: MapReduce
+    
 
 ## Week4 - The Spartan HPC System
 - Some background on supercomputing, high performance computing, parallel computing, research computing (they're not the same thing!).
@@ -447,6 +527,11 @@
 - Tantalising hints about more advanced material on message passing routines.
 
 ### past exam
+- > [2015 Q4] B) Explain the role of a job scheduler on a high performance computing system like the University of Melbourne Edward cluster. What commands can be used to influence the behavior of the job scheduler in supporting parallel jobs running on single or multiple nodes (servers)? [3]
+    - you can specify wall time, number of processess, number of threads in slurm scripts 
+    - and job scheduler schedule you job depend on theses
+    - wall time is a massive influence on this
+        - If you give a small wall time, the scheduler might schedule faster for you
 - > [sample Q5] B) The actual performance as experienced by users of shared-access HPC facilities such as the Edward cluster at the University of Melbourne can vary – where here performance can be considered as the throughput of jobs, i.e. from the time of first job submission to the time of last job completion. Explain why this can happen. [2]
     - Stuck in queue
     - Overall usage of facility (some nodes can be super busy)
@@ -461,7 +546,8 @@
     - Modules set uo with main libraries installed
 - > [sample Q5] D) Explain what users can do to optimize their throughput (use) of the Edward cluster. [2]
     - wall time choices (minimal necessary)
-        - If large, then job might be queued in a longer time it actually needs
+        - If too large, then the job might be queued in a longer time it actually needs
+        - If too small, then the job might be terminated before it finishes
     - avoid demanding large scale resource
     - Load right modules
     - benchmark small data then scale up to appropriate large value
@@ -471,6 +557,15 @@
         - different alogrithm implementation different performance
     - use Linpack which is a fixed set of algorithms that doesn't reflect real world apps
         - e.g.: Twitter analytics
+- > [2014 Q3, 2015 Q4 C [1]] B) What features does the Edward HPC facility offer to allow utilization of multiple servers (nodes)? [2]
+    - firstly, they exist
+    - secondly, you can specify your slurm scripts, you can specify the cloud resources you need (nodes/threads/cores). allows you to express these
+- > [2014 Q3] C) Why is the accuracy of the wall time estimate important to Edward end users? [2]
+    - If too large, then the job might be queued in a longer time it actually needs
+    - If too small, then the job might be terminated before it finishes
+- > [2015 Q4] A) Explain the following terms in the context of high performance computing.
+    - > c. Wall-time [1]
+        - the time limit when you submit job that you think the job will finish by
 
 ## Week5 - Cloud Computing & ~~Getting to Grips with the University of Melbourne Research Cloud~~
 Cloud computing is a model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing resources (e.g., networks, servers, storage, applications, and services) <u>that can be rapidly provisioned and released with minimal management effort or service provider interaction</u> 可以通过最少的管理工作或服务提供者交互从而可以快速地配置和发布
@@ -479,7 +574,7 @@ Cloud computing is a model for enabling ubiquitous, convenient, on-demand networ
 
     || Private| Community| Public| Hybrid |
     |---|---|---|---|---|
-    |pro|1. **Control**<br>2. **Consolidation of resources**<br>3. **Easier to secure** - easy to setup firewall<br>4. **More trust**||1. Utility computing<br>2. **Can focus on core business** - no need to care infrasture or be a devop<br>3. Cost-effective - use as much as you need<br>4. “Right-sizing”<br>5. Democratisation of computing<br>|1. **Cloud-bursting** - Use private cloud, but burst into (突然变成) public cloud when needed |
+    |pro|1. **Control**<br>2. **Consolidation of resources**<br>3. **Easier to secure** - easy to setup firewall<br>4. **More trust**||1. Utility computing<br>2. **Can focus on core business** - no need to care infrasture or be a devop<br>3. Cost-effective - use as much as you need<br>4. “Right-sizing”<br>5. Democratisation of computing<br>|1. **Cloud-bursting** - Use private cloud, but burst into (突然变成) public cloud when needed (What is hybrid cloud) |
     |con|1. Relevance to core business?<br>e.g. Netflix to Amazon<br>2. Staff/management overheads - need devop<br>3. Hardware obsolescence - need to refesh hardware<br>4. Over/under utilisation challenges - recycle resources<br>| | 1. **Security** - people can see your sensitive data<br>2. Loss of control<br>3. **Possible lock-in** - difficult to switch Azure if using AWS<br>4. Dependency of Cloud provider continued existence<br>| 1. How do you move data/resources when needed?<br>2. How to decide (in real time?) what data can go to public cloud?<br>3. Is the public cloud compliant with PCI-DSS (Payment Card Industry – Data Security Standard)?<br>|
     |example| | | | Eucalyptus, VMWare vCloud Hybrid Service|
 
@@ -492,6 +587,46 @@ Cloud computing is a model for enabling ubiquitous, convenient, on-demand networ
     | example| Amazon Web Services<br>Oracle Public Cloud<br>NeCTAR| Azure| Gmail|
 
 ### past exam
+- > [2015 Q6] C) Describe some of the challenges in delivering hybrid Clouds? [2]
+    - How do you move data/resources when needed?<br>
+    - How to decide (in real time?) what data can go to public cloud?<br>
+    - Is the public cloud compliant with PCI-DSS (Payment Card Industry – Data Security Standard)?<br>
+- > [2015 Q6] B) What are the advantages/disadvantages of public, private and hybrid clouds? [5]
+    - below
+- > [2014 Q2] A) According to Wikipedia “Cloud Computing is a colloquial expression used to describe a variety of different types of computing concepts that involve a large number of computers that are connected through a real-time communication network (typically the Internet). Cloud computing is a jargon term without a commonly accepted non-ambiguous scientific or technical definition”.
+    - > a. Is this justified? Your answer should cover:
+        - > i. public, private and hybrid Cloud computing models and their advantages and disadvantages; [4]
+                
+            || Private|Public| Hybrid |
+            |---|---|---|---|
+            |pro|1. **Control**<br>2. **Consolidation of resources**<br>3. **Easier to secure** - easy to setup firewall<br>4. **More trust**|1. Utility computing<br>2. **Can focus on core business** - no need to care infrasture or be a devop<br>3. Cost-effective - use as much as you need<br>4. “Right-sizing”<br>5. Democratisation of computing<br>|1. **Cloud-bursting** - Use private cloud, but burst into (突然变成) public cloud when needed |
+            |con|1. Relevance to core business?<br>e.g. Netflix to Amazon<br>2. Staff/management overheads - need devop<br>3. Hardware obsolescence - need to refesh hardware<br>4. Over/under utilisation challenges - recycle resources<br>| 1. **Security** - people can see your sensitive data<br>2. Loss of control<br>3. **Possible lock-in** - difficult to switch Azure if using AWS<br>4. Dependency of Cloud provider continued existence<br>| 1. How do you move data/resources when needed?<br>2. How to decide (in real time?) what data can go to public cloud?<br>3. Is the public cloud compliant with PCI-DSS (Payment Card Industry – Data Security Standard)?<br>|
+        - > ii. the different flavours of “X as a Service (XaaS)” models including their associated advantages and disadvantages. [4]
+            - IaaS
+                - adv
+                    - give access to service where we can now deploy our services on top of that using Ansible/Heater
+                disadv
+                    - you need to spend time to build such services
+            - PaaS
+                - adv
+                    - almost everything is organized by professionals, at the same time you have some freedom of action
+                - disadv
+                    - great dependency on the vendor
+            - SaaS
+                - adv
+                    - everything is organized for you by professionals
+                - disadv
+                    - no freedom, you fully depend on the vendor
+- > [2015 Q6] A) Describe the terms Cloud-based IaaS, PaaS and SaaS and give examples for each. [3]
+    - IaaS
+        - is a computing infrastructure giving access to service where we can now deploy our services on top of that using Ansible/Heater
+        - Amazon Web Services
+    - PaaS
+        - is a computing infrastructure almost everything is organized by professionals, at the same time you have some freedom of action
+        - Azure
+    - SaaS
+        - is a computing infrastructure everything is organized for you by professionals
+        - Gmail
 - > [sample Q2 C] What are availability zones in NeCTAR and what restrictions do they impose on NeCTAR Cloud-based application developers? [2]
     - availability zone: locations of data centers used to provide logical view of cloud
     - restriction: can't mount volumes to VMs in remote locations. If you have computer in Melbourne, you can't have your storage somewhere else in a different availability zone and you can't mount that volume.
@@ -534,13 +669,13 @@ Cloud computing is a model for enabling ubiquitous, convenient, on-demand networ
     - Ansible Vault for encryption
 
 ### past exam
-- > [Sample Q1] Applications can be deployed across Clouds either through creation and deployment of virtual images (snapshots) or through scripting the installation and configuration of software applications.
+- > [Sample Q1, 2017 Q7 B each [2], 2015 Q7 A [4, 3]] Applications can be deployed across Clouds either through creation and deployment of virtual images (snapshots) or through scripting the installation and configuration of software applications.
     - > What are the benefits and drawbacks of these approaches? [3]
         - Snapshots
             - benefits
                 - Snapshots are easy, can be created just by clicking buttons on dashboard
             - drawbacks
-                - No history of how the instance built
+                - No history of how the instance built -> no control
         - Scripting
             - benefits
                 - Scripting allows to do much more 
@@ -752,15 +887,81 @@ Representational State Transfer (ReST) is intended to evoke an image of how a we
     - **Neither**
         - POST
 
+### past exam
+- > [2015 Q2] A) Explain the general principles that should underlie the design of Service-Oriented Architectures (SOA). [7]
+    - |||exmaple|
+        |---|---|---|
+        |Standardized service contract| Services adhere to a communications agreement, as defined collectively by one or more service-description documents.|Use defined twitter API|
+        |Service loose coupling| Services maintain a relationship that minimizes dependencies and only requires that they maintain an awareness of each other.|
+        |Service abstraction| Beyond descriptions in the service contract, services hide logic from the outside world.|Twitter decide the API for you to use i.e. the rule how you can see inside through the Twitter, hide things which you have no access to
+        |Service reusability| Logic is divided into services with the intention of promoting reuse.|
+        |Service autonomy| Services have control over the logic they encapsulate.|you can have tweets older than 2 weeks than you really can't
+        |Service statelessness| Services minimize resource consumption by deferring the management of state information when necessary.|
+        |Service discoverability| Services are supplemented with communicative meta data by which they can be effectively discovered and interpreted.|
+        |Service composability| Services are effective composition participants, regardless of the size and complexity of the composition.|
+        |Service granularity| a design consideration to provide optimal scope at the right granular level of the business functionality in a service operation.|
+        |Service normalization| services are decomposed and/or consolidated to a level that minimizes redundancy, for performance optimization, access, and aggregation.|
+        |Service optimization| high-quality services that serve specific functions are generally preferable to general purpose low-quality ones.|
+        |Service relevance| functionality is presented at a level of granularity recognized by the user as a meaningful service.|
+        |Service encapsulation| many services are consolidated for use under a SOA and their inner workings hidden.|
+        |Service location transparency| the ability of a service consumer to invoke a service regardless of its actual location in the network.|client only use url to use the service on the web regardless of location of service
+- > [2015 Q2] B) Explain why and how Cloud infrastructures have benefited from SOA. [3]
+    - standardized interfaces available tn enable you not worry how the cloud internal do tasks for external interactions
+    - When an architecture is completely contained within the same machine, components can communicate directly
+        - e.g. through function calls or object instantiations.
+    - However, when components are distributed such a direct approach typically cannot be used  (e.g. Assignment 2!)
+    - Therefore, components (more properly, systems) have to interact in more loosely-coupled ways. 
+    - **Services** are often used for this. Typically combinations and commonality of services can be used to form a **Service-oriented Architecture (SoA)**.
+- > [2014 Q1] B) How has the evolution of service-oriented architectures supported Cloud computing? [2]
+    - SOA has Uniform interface, abstraction, standard contract etc etc avoid all Clouds building their own bespoke solutions (from the forum, below from recording)
+    - you have standardized interface for the service-oriented architectures
+        - it offers the autonomy 
+        - you are providing interface that people/software can interact with
+    - Where it is helping cloud computing is every single cloud provider at the builder of the interface using different technlogies i.e. you have to learn the programming language to do that and this can be a major bottleneck. Adpoting SOA like ReST can help to solve this problem. We have apis provided by openstack where you can interact with the cloud with the help of set of libraries for doing that. 
+- > [2013 Q4] A) Compare and contrast Representational State Transfer (ReST) based web services and Simple Object Access Protocol (SOAP)-based web services for implementing service-oriented architectures. [8]
+    - They are different flavors of web services
+    - complexity of SOAP
+        - have namespace and standardization around us to do with the operation names of parameters
+        - using XML which is bloated (臃肿的) and not easy to use
+            - SOAP uses  a stack of protocols that covers every aspect of using a remote service, from service discovery, to service description, to the actual request/response. While ReST uses HTTP than a separate protocol
+            - SOAP uses WSDL which is an XML-based interface description language that describes the functionality offered by a web service. WSDL provides a machine-readable description of how the service can be called, what parameters it expects, and what results/data structures are.
+            - While ReST doesn't deal with complex WSDL. You can mix/match service models
+            - While ReST has no need to understand what methods mean. There is a very small subset of methods that are available in operation where you can do PUT, POST, GET, etc. This very limited vocabulary provide many advantages:
+                - simplify understanding from developers who are implementing system to make client to interact with
+        - too much standards compared to ReST
+    - SOAP is built upon the <u>Remote Procedure Call paradigm (a language independent function call that spans another system)</u> while ReST is centered around resources, and the way they can be manipulated (added, deleted, etc.) remotely
+- > [2015 Q3] A) _SOAP is dead; ReST is the future!_ Explain this statement with regards to Representational State Transfer (ReST) based web services compared to Simple Object Access Protocol (SOAP)-based web services for implementing service-oriented architectures. [5]
+    - above
+- > [2013 Q4] B) Explain the differences between ReST-based PUT and POST methods and explain when one should be used over another. [2]
+    - PUT is used to create resource
+    - POST is used to update resource
+    - **PUT** should be used when target resource URL is known by the client.
+    - **POST** should be used when target resource URL is server generated
+- > [2014 Q1] C) A HTTP method can be _idempotent_
+    - > What is meant by this italicized term? [1]
+        - Effect of repeating a call is equivalent to making a single call; if not can has side-effects
+    - > Give an example of an idempotent ReST method. [1]
+        - PUT
+- > [2015 Q3] B) HTTP methods can be safe or idempotent.
+    - > a. What is meant by a safe HTTP method? [1]
+        - Do not change, repeating a call is equivalent to not making a call at all 
+    - > b. Give an example of a safe HTTP method. [1]
+        - GET
+    - > c. What is meant by an idempotent HTTP method? [1]
+        - Effect of repeating a call is equivalent to making a single call; if not can has side-effects
+    - > d. Give an example of an idempotent HTTP method. [1]
+        - PUT
+    - > e. Give an example of a HTTP method that is neither safe nor idempotent? [1]
+        - POST
 
 ## Week 7 – Big Data and CouchDB
 ### "Big data" challenges and architectures
 #### challenge
 1. four "Vs"
 
-    |||
+    |Big data challenges||
     |---|---|
-    |Volume| yes, volume (Giga, Tera, Peta, …) is a criteria, but not the only one
+    |Volume| No one really knows how much new data is being generated, but the amount of information being collected is huge.
     |Velocity| **the frequency (that data arrive)** at which new data is being brought into the system and analytics performed
     |Variety| **the variability and complexity** of data schema. The more complex the data schema(s) you have, the higher the probability of them changing along the way, adding more complexity.
     |Veracity| **the level of trust** in the data accuracy (provenance); the more diverse sources you have, the more unstructured they are, the less veracity you have.
@@ -868,6 +1069,9 @@ Representational State Transfer (ReST) is intended to evoke an image of how a we
         - n is the number of replicas (how many times the same data item is repeated across the cluster)
         - q is the number of shards (how many files a database is split)
         - n * q is the total number of shard files distributed in the different nodes of the cluster
+        - <img src="./docs/31.png" width="60%" height="50%" />
+            
+            - There are 16 shards since the three node clustered database has n=2 replicas and q=8 shards. 
 7. Partitions
     - What is it?  
         - A partition is a grouping of logically related rows in the same shard 
@@ -967,6 +1171,36 @@ Representational State Transfer (ReST) is intended to evoke an image of how a we
 - Part 2: Introduction to CouchDB, recording 07:: 01:15:16
 
 ### past exam
+- > [2013 Q7] A) Many research domains are facing "big data" challenges. Big data is not just related to the size of the data sets. Explain. [5]
+    - |Big data challenges||
+        |---|---|
+        |Volume| No one really knows how much new data is being generated, but the amount of information being collected is huge.
+        |Velocity| **the frequency (that data arrive)** at which new data is being brought into the system and analytics performed
+        |Variety| **the variability and complexity** of data schema. The more complex the data schema(s) you have, the higher the probability of them changing along the way, adding more complexity.
+        |Veracity| **the level of trust** in the data accuracy (provenance); the more diverse sources you have, the more unstructured they are, the less veracity you have.
+    - For life science, there can be all kinds of flavours of datasets and it's not as simple as integrating them all as there can be huge heterogeneous across data sets.
+- > [2013 Q7] B) What capabilities are currently offered or will be required for Cloud Computing infrastructures such as the NeCTAR Research Cloud to tackle these "big data" challenges. [5]  
+You may refer to specific research disciplines, e.g. life sciences, astrophysics, urban research (or others!) in your answer to part A) and B) of this question.
+    -  You can have access to CouchDB service on the cloud but this does not help to the high velocity problems or sensitive data problems or it doesn't solve other challenges in the big data space. These problems should be solved by engineers and shouldn't be expected to be solved by the NeCTAR.
+    - For life science, there is no cancer database. You have to build your own by using the infrastructure provided by the NeCTAR.
+    - No fine-grained security service, you have to build it on the cloud.
+    - For life science, there can be all kinds of flavours of datasets and you need to provide a service to integrate them and make the result accessible.
+    - For life science, there are thousands of databases relevant to bioinformatics and growing! i.e. we know there can be lots of data but we don't know exact how much. So we should make the NeCTAR be scalable to the volumes of the data to be stored.
+
+- > [2013 Q3] A) Explain the consequences of Brewer's CAP theorem on distributed databases. [4]
+    - Brewer’s CAP Theorem: you can only pick any two of Consistency, Availability and Partition-Tolerance.
+    - Two phase commit can achieve Consistency and Availability
+    - Paxos can achieve Consistency and Partition-Tolerance
+    - Multi-Version Concurrency Control (MVCC) can achieve Availability and Partition-tolerance
+- > [2013 Q3] B) Describe which aspects of the CAP theorem are supported by the following database technologies:
+    - > non-SQL (unstructured) databases such as CouchDB. [2]
+        - CouchDB uses MVCC to support Availability and Partition-tolerance
+    - > relational databases such as PostGreSQL. [2]
+        - Relational DBMSs are extremely good for ensuring consistency and availability
+    - > Describe the advantages of MapReduce compared to other more traditional data processing approaches. [2]
+        - You can map to multiple different servers and you can reductions on all data and it can scale.
+        - parallelism
+        - greatly reducing network traffic by moving the process to where data are
 - > [sample Q4] A) In the context of distributed databases, explain the concepts of: 
     - > Consistency [1]
         - every client receiving an answer receives **the same answer** from all nodes in the cluster (it doesn't depend on which node is quired)
@@ -983,6 +1217,22 @@ Representational State Transfer (ReST) is intended to evoke an image of how a we
         - Minumum number of nodes that have to give the same result to a read operation for it to be declared valid and sent back to the client
     - > Write quorum [1]
         - Minumum number of nodes that have to occur for a write operation for it to be accepted
+- > [2014 Q5] A) Discuss the advantages and disadvantages of unstructured (noSQL) databases such as CouchDB for dealing with “big data” compared to more traditional databases, e.g. relational databases such as MySQL.  
+Your answer should cover challenges with data distribution, traditional database ACID properties, heterogeneity of data and large-scale data processing. [6]
+    - In traditional database, we have things like schema, keys tables. While we don't have these in noSQL database which is more flexible.
+    - In traditional database, we have to write queries. While we don't to do these in noSQL database
+    - Because we have heterogenous data, we would like to save them as document in the noSQL database which is not supported by traditional database
+            - The majority of the data comes in a semi-structured or unstructured format from social media, audio, video, texts, and emails.
+    - Because noSQL database support mapreduce, we can run mapreduce across many many services which full-scale the processing opportunities for large scale analytics on multiple servers and processing them
+    - For ACID, in mySQL transaction needs to be complete while this not a problem with distributed database which shard across multiple servers and everyone of returns with the same answer which can causes overhead on the limitation to do that. CouchDB's nodes can fail but you can still get results.
+    - While Relational DBMSs are extremely good for ensuring consistency and availability, the normalization that lies at the heart of a relational database model implies fine-grained data, which are less conducive to partition-tolerance than coarse-grained data.
+        - Example:
+            -  A typical contact database in a relational data model may include: a person table, a telephone table, an email table and an address table, all relate to each other.
+            -  The same database in a document-oriented database would entail one document type only, with telephones numbers, email addresses, etc., nested as arrays in the same document.
+        - While Relational DBMSs are extremely good at ensuring consistency, they rely on normalized data models that, in a world of big data (Veracity and Variety) can no longer be taken for granted.
+            - Therefore, it makes sense to use DBMSs that are built upon data models that are not relational (relational model: tables and relationships amongst tables).
+        - Relational database finds it challenging to handle such huge data volumes. To address this, RDBMS added more central processing units (or CPUs) or more memory to the database management system to scale up vertically
+        - Big data is generated at a very high velocity. RDBMS lacks in high velocity because it’s designed for steady data retention rather than rapid growth
 
 ## Workshop week6: Containerization and docker
 ### Virtualization vs Containerization
@@ -1220,7 +1470,7 @@ Terminology
     - Guest OS apps “think” they write to hard disk but translated to virtualised host hard drive by VMM
         - Which one is determined by image that is launched
 
-2. Motivation ~~& History~~
+2. Motivation (why we want VM/virtualization/advantages) ~~& History~~
     |motivation||
     |---|---|
     |Server Consolidation|1. Increased utilisation<br/>2. Reduced energy consumption
@@ -1253,12 +1503,17 @@ Terminology
     |De-privileging (trap-and-emulate)|trap-and-emulate: VMM emulates the effect on system/hardware resources of privileged instructions whose execution traps into the VMM|running GuestOS at a lower hardware priority level than the VMM|Problematic on some architectures where privileged instructions do not trap when executed at de-privileged level
     |Primary/shadow structures|1. VMM maintains “shadow” copies of critical structures whose “primary” versions are manipulated by the GuestOS, e.g. memory page tables<br/>2. Primary copies needed to insure correct versions are visible to GuestOS
     |Memory traces|Controlling access to memory so that the shadow and primary structure remain coherent|write-protect primary copies so that update operations cause page faults which can be caught, interpreted, and addressed <br/>- Someones app/code doesn’t crash the server you are using!!!
+    - Do sensitive instructions and privileged instructions both need to be trap-and-emulate?
+        - All sensitive/privileged instructions have to be dealt with. Some will need to be emulated/translated
+        - others can just happen depending on the mode and/or whether para-virtualisation is supported.
+        - (Popek and Goldberg Theorem above and sth below)
 4. Virtualisation approaches (compare with each other pair wise 1 v.s. 2, ...)
     |Aspects of VMMs|What is it?|e.g.|Advantages|Disadvantages|
     |---|---|---|---|---|
     |Full virtualisation|allow an unmodified guest OS to run in isolation by simulating full hardware <br/>- Guest OS has no idea it is not on physical machine|VMWare|1. Guest is unaware it is executing within a VM<br/>2. Guest OS need not be modified<br/>3. No hardware or OS assistance required<br/>4. Can run legacy OS|1. can be less efficient|
-    |Para-virtualisation|- VMM/Hypervisor exposes special interface to guest OS for better performance. Requires a modified/hypervisor-aware Guest OS <br/> - Can optimise systems to use this interface since not all instructions need to be trapped/dealt with|Xen|1. Lower virtualisation overheads, so better performance|1. Need to modify guest OS - Can’t run arbitrary OS!<br/>2. Less portable<br/>3. Less compatibility<br/>
+    |Para-virtualisation|- VMM/Hypervisor exposes special interface to guest OS for better performance. Requires a modified/hypervisor-aware Guest OS <br/> - Can optimise systems to use this interface since not all instructions need to be trapped/dealt with because "VMM emulates the effect on system/hardware resources of privileged instructions whose execution traps into the VMM"|Xen|1. Lower virtualisation overheads, so better performance|1. Need to modify guest OS - Can’t run arbitrary OS!<br/>2. Less portable<br/>3. Less compatibility<br/>
     |Hardware-assisted virtualisation|Hardware provides architectural support for running a Hypervisor<br/>- New processors typically have this<br/>- Requires that all sensitive instructions trappable|KVM|1. Good performance<br/>2. Easier to implement<br/>3. Advanced implementation supports hardware assisted DMA, memory virtualisation|1. Needs hardware support
+    |software virtualization|Any virtualisation that does not involve hardware support.|
     |Binary Translation|Trap and execute occurs by scanning guest instruction stream and replacing sensitive instructions with emulated code <br/> - Don’t need hardware support, but can be much harder to achieve|VMWare|1. Guest OS need not be modified<br/>2. No hardware or OS assistance required<br/>3. Can run legacy OS|1. Overheads<br/> 2. Complicated<br/> 3. Need to replace instructions “on-the-fly”<br/> 4. Library support to help this, e.g. vCUDA
     |Bare Metal Hypervisor|VMM runs directly on actual hardware<br/>- Boots up and runs on actual physical machine<br/>- VMM has to support device drivers, all HW mgt |VMWare ESX Server
     |Hosted Virtualisation|VMM runs on top of another operating system|VMWare Workstation
@@ -1285,7 +1540,49 @@ Terminology
 6. Live migration
     - having continuity of service during data moving
     - Live Migration from Virtualisation Perspective/Live migration of virtual machines
-        - see lecture 8.1 slide 25
+        - <img src="./docs/30.jpg" width="40%" height="30%" />
+
+### past exam
+- > [2013 Q5] A) Explain what is meant by the following terms:
+    - > Virtual Machine Monitor/Hypervisor [1]
+        - is a technology to provide virtualization by providing a virtualisation layer between the underlying hardware the virtual machines and guest operating systems it supports.
+    - > Full virtualization [1]
+        - allow an unmodified guest OS to run in isolation by simulating full hardware 
+            - Guest OS has no idea it is not on physical machine
+    - > Para-virtualization [1]
+        - VMM/Hypervisor exposes special interface to guest OS for better performance. Requires a modified/hypervisor-aware Guest OS 
+        - Can optimise systems to use this interface since not all instructions need to be trapped/dealt with
+    - > Shadow page tables [1]
+        - VMM (virtual machine monitar) keeps a mapping between what a vitual machine on the server rack you think that if you are dealing with address spaces and memory update. And it keeps a logical mapping so that all the instances think their own page tables which they don't. All of that is managed indirectly by the shadow page table.
+    - > Explain how hardware virtualization and software virtualization can differ in their treatment of shadow page tables. [2]
+        <!-- - hardware virtualization has less performance overheads
+        - hardware virtualization has the ability to trap various sensitive calls and different software solutions to do that -->
+        - Main issue is that the hardware does a lot of the management of shadow page tables and hence is faster but needs all calls to be trappable by hardware. Doing it via software virtualisation requires sensitive calls to be trapped and handled by the VMM which is slower. 
+        - The VMM needs to keep shadow page tables synchronised with guest page tables. You might add para-virtualisation to hardware virtualization (the one has shadow page table) can improve things from a performance perspective.
+    - > Explain the advantages and disadvantages of virtual machines. [2]
+        - adv
+            - reuse hardware and have multiple different OS running on the same physical system
+        - disadv
+            - performance overhead
+            - privacy and security issue
+            - virtual machine has slow startup time
+    - > [2017 Q7 C [3]] Describe the typical steps that are required to support live migration of virtual machine instances using a Cloud facility such as the NeCTAR Research Cloud. [2]
+        - picture above
+- > [2014 Q7] A) Define the following terms and their relevance to Cloud Computing:
+    - > a. Hypervisor [1]
+        - above
+    - > b. Virtual machine [1]
+        - A representation of a real machine using hardware/software that can host a guest operating system
+    - > c. Machine image [1]
+        - is a Compute Engine resource that stores all the configuration, metadata, permissions, and data from one or more disks required to create a virtual machine (VM) instance.
+    - > d. Object Store [1]
+        - is a strategy that manages and manipulates data storage as distinct units
+    - > e. Volume Store [1]
+        - Store = Storage
+        - Volume storage is the virtual equivalent of a USB drive. A USB drive retains your data, whether it is plugged in or not. Manipulating the data on a USB drive requires that it is plugged into a computer and that it is mounted by the operating system. Your USB drive can be unplugged and plugged into another (newer, bigger, better) computer, but your USB drive can only ever be plugged in to one computer at a time. 
+        - Equivalently a volume in your Nectar project can retain your data, whether it is attached to an instance or not. Manipulating the data on the volume requires that is attached to an instance, and that the file systems is mounted by the operating system. Your volume can be detached and attached to another (newer, bigger, better) instance, but your volume can only ever be attached to one instance at a time. 
+    - > f. Key-pair [1]
+        - A key pair consists of a private key and a public key.
 
 ## Week 8.2 – OpenStack & Comparing and Contrasting AWS with NeCTAR Cloud
 - Offers free and open-source software platform for cloud computing for <u>**IaaS**</u>
@@ -1709,6 +2006,12 @@ Terminology
         - created out of collections too, using the parallelize function
 
 ### past exam
+- > [2014 Q5] B) Apache Hadoop is a software framework that enables processing of large data sets.
+    - > a. Explain the role of Hadoop Distributed File System (HDFS) in supporting the Apache Hadoop framework. [2]
+        - HDFS has blocks existing on nodes and there is a name node which contains the meta data about which block is running.
+        - HDFS is a fault tolerant file system that has been explicitly designed to span many nodes
+    - > b. Describe the process by which Apache Hadoop supports fault tolerant data processing. [2]
+        - HDFS has blocks existing on nodes and there is a name node which contains the meta data about which block is running and if one of the nodes fails then the data is still available somewhere else in the system load balanced. And it will try to rebalnce itself.
 - > [sample Q4] D) Describe the three different Apache SPARK runtime modes:    
     - > Local [1]
         - The driver program and the executors are all hosted on the same computer (no need for a cluster manager).
@@ -1835,7 +2138,7 @@ Terminology
             - Centralised vs decentralised systems?
                 - More scalable solution needed
                 - Decentralised Authentication (Proof of Identity) thru Shibboleth
-                    - <img src="./docs/28.jpg" width="70%" height="50%" />
+                    - <img src="./docs/28.jpg" width="80%" height="50%" />
                     - Supports Single-Sign On (in case you were unaware)
     - Public Key Infrastructures (PKI) underpins MANY systems
         - What is it?
@@ -1862,7 +2165,7 @@ Terminology
         - PKI and Cloud
             - So what has this got to do with Cloud…?
                 - IaaS – key pair!
-            - Cloud inter-operability begins with security!
+            - Cloud interoperability begins with security!
                 - There is no single, ubiquitous CA, there are many
             - There are many ways to prove your identity
                 - OpenId, FacebookId, Visa credit card for Amazon, …
@@ -1953,3 +2256,99 @@ Terminology
     - Reflect needs and understanding of organisations involved!
     - Identity Provider
         - The place you got authenticated
+
+### past exam
+- > [2013 Q6] A) Explain what is meant by the following security terms:
+    - > single sign-on [1]
+        - is where you authenticate once then the identity provider will enable you to access set of multiple different services which can be hosted in different places 
+    - > public key infrastructures [1]
+        - the cloud computing is based on this
+        - you have public private key pairs where public key is hold by anyone but only you hold by yourself. And the certificates which issuing the connection between your pulic key and your private key. And the certificate is issued by the certification authority. If you want to get certificates, you have to prove your identity. 
+    - > certification authority [1]
+        - The certification authority is the authority who is responsible for issuing the certificate.
+    - > registration authority [1]
+        - The physical individual in the organization who is responsible for checking someone's identity
+    - > identity provider (IdP) [l]
+        - is the authentication system
+        - The place you got authenticated to prove your identity
+         - e.g.: When you want to login the AURIN, you are redirected to unimelb authentication where you need to provide your identity
+- > [2013 Q6] B) Discuss the challenges in supporting fine-grained security in Cloud environments. You may refer to the importance and/or role of (some of) the terms in part A) of this question. [5]
+    - how cloud do authentication
+        - e.g.: fine-grained access control which is authorization, auditing. There is still problem which is confidentiality. The fact that you put your data on the given server and you have no idea where the server is
+    
+    - fine-grained security is not done pretty well in the cloud. We kind of knowing how to do authentication to a certain degree. But building access control system without fine-grain is something that cloud doesn't generally provide for you so that you have to build by yourself.
+
+    - authentication
+    - authorization
+    - accounting/auditing
+    - confidentiality
+    - trust
+- > [2015 Q5] A) There are many open challenges in delivering secure Clouds. Describe some of the technical and non-technical issues that currently exist for development and delivery of security-oriented Clouds. [4]
+    - techincal issues:
+        - authorisation
+        - trust, 
+            - trust the cloud provider that data is secured to be stored on that
+        - api, 
+        - single sign-on, 
+            - Login once, but can access many more resources that potentially provided by other providers
+            - **The Grid model (and Shib model!) needed**
+            - **Currently not solved for Cloud-based IaaS**
+            - Onus (责任) is on non-Cloud developers to define/support this, so cloud developer can't do anything to help with
+        - certificate authority
+            - challenge: 
+                - there isn't centralized certificate authority for the cloud
+                - Issuing certificates
+                    - Often need to delegate to local Registration Authority
+                    - Prove who you are, e.g. with passport, student card
+                - Revoking certificates
+                    - Certificate Revocation List (CRL) for expired/compromised certificates
+                - Storing, archiving 
+                    - Keeping track of existing certificates, various other information
+    - non-techincal issues:
+        - business issue: government won't allow medical data stored on cloud like AWS because it might be backup in somewhere else
+        - sensitive issue
+        - policy issue
+        - Liability
+            - Using contract to state the risk when put data here
+        - Licensing
+            - Challenges with the Cloud delivery model (Where can jobs realistically run)
+            - Many license models
+                - Per user
+                - Per server
+                - Per organisation
+                - Floating licenses
+                - Fixed to machines
+- > [2014 Q2] A) b. Outline some of the practical challenges in supporting Cloud interoperability? [2]
+    - Security
+        - You don't have single sign-on: login once to access a variety of clouds for various reasons
+    - API themselves
+        - Cloud providers, especially public ones want to lock you in. 
+        - They have different business models, different costs
+- > [2014 Q6] A) The Internet2 Shibboleth technology as currently supported by the Australia Access Federation provides _federated authentication_ and _single sign-on_.
+    - > a. Explain what is meant by the italicized terms [2].
+        - federated authentication
+            - is basically where you are trying to access a resource while you are proving your identity somewhere else
+        - single sign-on 
+            - is where you authenticate once then the identity provider will enable you to access set of multiple different services which can be hosted in different places 
+    - > b. Explain the role of trust and public key infrastructures in supporting the Internet2 Shibboleth model. [2]
+        - trust
+            - is a key part of any kind of security system in Shibboleth based on trust. So we all trust the organisation to authenticate their uses
+        - public key infrastructures
+            - all messages about where you are from and do you authenticate here are digitally signed. We don't trust anyone who is not identity proven. It's only those in the federation and they have keys which are used to do the authentication.
+                - e.g. I am from unimelb and I am assigning this message with my key which you can then use this key to verify that this is the key you trust effectively.
+    - > c. What are the advantages and disadvantages of the Shibboleth approach for security? [4]
+        - adv
+            - flexible when you doing single sign-on
+            - simple to use, access different service just by proving identity once
+        - disadv
+            - all of the protocols are static
+                - this information which is used to setup professor snott has authenticated at unimelb. So there is a collection about attributes e.g.: he is a staff. This information is pre-agreed in advance. If join the new project, this information wouldn't be available with unimelb system. limited because it is static
+            - not flexible, not dynamic 
+    - > d. Why isn’t Shibboleth used to access Cloud-based systems more generally? [2]
+        - related to trust. differnt cloud provider requires different facts in the Shibboleth
+            - e.g.: Amazon requires you credit card info while unimelb only requires student info.
+- > [2015 Q5] B) The Internet2 Shibboleth technology as currently supported by the Australia Access Federation provides federated authentication.
+    - > a. Explain what is meant by this italicized term and discuss the advantages and disadvantages of the Shibboleth approach for security. [3]
+        - above
+    - > b. Why isn’t Shibboleth used to access Cloud-based systems more generally? [3]
+        - above
