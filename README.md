@@ -129,9 +129,13 @@
 - > [2015 Q1] A) Describe some of the erroneous assumptions that are often made in designing large-scale distributed systems. [5]
     - above
 - > [2014 Q1] A) Discuss the major trends in research and research computing over the last 20 years that have led to the emergence of Cloud computing. [6]
-    - main frames to move to the distributed system
-    - the evolution of the internet
+    - Mainframes
+        - main frames to move to the distributed system
+    - decentralised PCs
+    - explosion of the Internet
     - distributed system move back to the centralised system
+    - scale of compute/storage
+    - clouds and data centres
 
 ## Week2 - Domain Drivers – tour of some big data projects
 1. compute scaling
@@ -846,12 +850,15 @@ Representational State Transfer (ReST) is intended to evoke an image of how a we
         - is a way of turning a problem into a RESTful web service:   
     an arrangement of URIs, HTTP, and XML that works like the rest of the Web
         - ROA has a style of supporting Restful services that allows folk to interact/navigate their functionality (HATEOS etc). The services still do PUT, POST, GET etc.
+            - can be used to support the definition and creation of services or service endpoints. 
     - ROA \& Rest
         - ROA has a style of supporting Restful services that allows folk to interact/navigate their functionality (HATEOS etc). The services still do PUT, POST, GET etc.
     - ROA v.s. SOA
         - similar
             - Much of the philosophy behind SOA applies to ROA, 
                 - e.g. services should support abstraction, contract, autonomy etc, 
+        - difference
+            - ROA is compared to SOA as a different (better) approach that can be used to support the definition and creation of services or service endpoints. 
         - ROA has advantages
             - there is no need to understand what methods mean or deal with complex WSDL etc. You can mix/match service models
                 - e.g. consider the AURIN architecture with ReST, SOAP and many other service flavours.
@@ -932,6 +939,19 @@ Representational State Transfer (ReST) is intended to evoke an image of how a we
     - SOAP is built upon the <u>Remote Procedure Call paradigm (a language independent function call that spans another system)</u> while ReST is centered around resources, and the way they can be manipulated (added, deleted, etc.) remotely
 - > [2015 Q3] A) _SOAP is dead; ReST is the future!_ Explain this statement with regards to Representational State Transfer (ReST) based web services compared to Simple Object Access Protocol (SOAP)-based web services for implementing service-oriented architectures. [5]
     - above
+- > [2016 Q4] A) Representational State Transfer (ReST) based web services are often used for creating Resourceoriented Architectures (ROA) whilst Simple Object Access Protocol (SOAP)-based web services are often used to implement Service-oriented Architectures (SOA). Discuss the similarities and differences between a ROA and a SOA. [3]
+    - similar
+        - Much of the philosophy behind SOA applies to ROA, 
+            - Standardized service contract
+                - Services adhere to a communications agreement, as defined collectively by one or more service-description documents.|Use defined twitter API|
+            - Service abstraction
+                - Beyond descriptions in the service contract, services hide logic from the outside world.|Twitter decide the API for you to use i.e. the rule how you can see inside through the Twitter, hide things which you have no access to
+            - Service autonomy
+                - Services have control over the logic they encapsulate.|you can have tweets older than 2 weeks than you really can't
+        - both uses HTTP for the communication between client and the resource
+    - difference
+        - ROA is compared to SOA as a different (better) approach that can be used to support the definition and creation of services or service endpoints. 
+        - ROA has no need to understand what methods mean or deal with complex WSDL.
 - > [2013 Q4] B) Explain the differences between ReST-based PUT and POST methods and explain when one should be used over another. [2]
     - PUT is used to create resource
     - POST is used to update resource
@@ -1171,6 +1191,19 @@ Representational State Transfer (ReST) is intended to evoke an image of how a we
 - Part 2: Introduction to CouchDB, recording 07:: 01:15:16
 
 ### past exam
+    - > [2016 Q3] A) Big data is often associated with data having a range of properties including high volume, high velocity and high variety (heterogeneity).  
+    Discuss the advantages, disadvantages and suitability more generally of the following data solutions with regards to these big data properties:  
+    Your answer should include the way in which these solutions implement MapReduce.
+        - > a. CouchDB [3]
+        - is a document oriented database which helps to solve the data variaty challenge
+        - supports unique index which helps to improve storage space when there is data duplication for high volume challenge
+        - the use of mapreduce in CouchDB parallelize data processing from huge amout in a small amount way which can helps to solve the high volume challenge
+    - > b. Apache Hadoop Distributed File System (HDFS) [3]
+        - Apache Hadoop started as a way to distribute files over a cluster and execute MapReduce tasks
+    - > c. Apache Spark [3]
+        - Spark was designed to reduce the latency inherent in the Hadoop approach for the execution of MapReduce job
+    - > What other data properties can be associated with big data challenges? [1]
+        - Veracity: the level of trust in the data accuracy (provenance); the more diverse sources you have, the more unstructured they are, the less veracity you have.
 - > [2013 Q7] A) Many research domains are facing "big data" challenges. Big data is not just related to the size of the data sets. Explain. [5]
     - |Big data challenges||
         |---|---|
@@ -1387,7 +1420,10 @@ Your answer should cover challenges with data distribution, traditional database
     - Docker orchestration tools
         - Kubernetes
         - Docker SWARM
-    
+- > [2017 Q4] d ii What is the relationship between a Docker Image and a Docker
+Container? [1]
+    - Container is a process that behaves like an independent machine, it is a runtime instance of a docker image.
+    - Image is a blueprint for a container.
 
 - > [sample Q6] B)  A researcher wants to attach to an already running Postgresql container and list all of the databases it contains. The command to list all of the database is psql -U postgres -c “\l”. The name of the container is postgres and it exposes the port 5432 to the host. Is the following command correct? If not, please correct it:                     docker exec -p 5432 --name postgres sh -c psql -U postgres -c “\l”             [3]    
     - docker exec -t postgres sh -c "psql -U postgres -c \"\I\""
@@ -1461,7 +1497,7 @@ Terminology
 - 
     |||
     |---|---|
-    |Virtual Machine Monitor/Hypervisor|The virtualisation layer between the underlying hardware the virtual machines and guest operating systems it supports.
+    |Virtual Machine Monitor/Hypervisor|The virtualisation layer between the underlying hardware the virtual machines and guest operating systems it supports. Give a perception of a whole machine.
     |Virtual Machine|A representation of a real machine using hardware/software that can host a guest operating system
     |Guest Operating System|An operating system that runs in a virtual machine environment that would otherwise run directly on a separate physical system.
 1. What happens in a VM?
@@ -1527,6 +1563,7 @@ Terminology
         
 5. Memory Virtualisation
     - <img src="./docs/20.jpg" width="40%" height="30%" />
+        
         - In conventional case, page tables store the logical page number and physical page number mappings
     - <img src="./docs/21.jpg" width="40%" height="30%" />
         
@@ -1543,6 +1580,21 @@ Terminology
         - <img src="./docs/30.jpg" width="40%" height="30%" />
 
 ### past exam
+- > [2014 Q7] A) Define the following terms and their relevance to Cloud Computing:
+    - > a. Hypervisor [1]
+        - above
+    - > b. Virtual machine [1]
+        - A representation of a real machine using hardware/software that can host a guest operating system
+    - > c. Machine image [1]
+        - is a Compute Engine resource that stores all the configuration, metadata, permissions, and data from one or more disks required to create a virtual machine (VM) instance.
+    - > d. Object Store [1]
+        - is a strategy that manages and manipulates data storage as distinct units
+    - > e. Volume Store [1]
+        - Store = Storage
+        - Volume storage is the virtual equivalent of a USB drive. A USB drive retains your data, whether it is plugged in or not. Manipulating the data on a USB drive requires that it is plugged into a computer and that it is mounted by the operating system. Your USB drive can be unplugged and plugged into another (newer, bigger, better) computer, but your USB drive can only ever be plugged in to one computer at a time. 
+        - Equivalently a volume in your Nectar project can retain your data, whether it is attached to an instance or not. Manipulating the data on the volume requires that is attached to an instance, and that the file systems is mounted by the operating system. Your volume can be detached and attached to another (newer, bigger, better) instance, but your volume can only ever be attached to one instance at a time. 
+    - > f. Key-pair [1]
+        - A key pair consists of a private key and a public key.
 - > [2013 Q5] A) Explain what is meant by the following terms:
     - > Virtual Machine Monitor/Hypervisor [1]
         - is a technology to provide virtualization by providing a virtualisation layer between the underlying hardware the virtual machines and guest operating systems it supports.
@@ -1568,21 +1620,36 @@ Terminology
             - virtual machine has slow startup time
     - > [2017 Q7 C [3]] Describe the typical steps that are required to support live migration of virtual machine instances using a Cloud facility such as the NeCTAR Research Cloud. [2]
         - picture above
-- > [2014 Q7] A) Define the following terms and their relevance to Cloud Computing:
-    - > a. Hypervisor [1]
-        - above
-    - > b. Virtual machine [1]
-        - A representation of a real machine using hardware/software that can host a guest operating system
-    - > c. Machine image [1]
-        - is a Compute Engine resource that stores all the configuration, metadata, permissions, and data from one or more disks required to create a virtual machine (VM) instance.
-    - > d. Object Store [1]
-        - is a strategy that manages and manipulates data storage as distinct units
-    - > e. Volume Store [1]
-        - Store = Storage
-        - Volume storage is the virtual equivalent of a USB drive. A USB drive retains your data, whether it is plugged in or not. Manipulating the data on a USB drive requires that it is plugged into a computer and that it is mounted by the operating system. Your USB drive can be unplugged and plugged into another (newer, bigger, better) computer, but your USB drive can only ever be plugged in to one computer at a time. 
-        - Equivalently a volume in your Nectar project can retain your data, whether it is attached to an instance or not. Manipulating the data on the volume requires that is attached to an instance, and that the file systems is mounted by the operating system. Your volume can be detached and attached to another (newer, bigger, better) instance, but your volume can only ever be attached to one instance at a time. 
-    - > f. Key-pair [1]
-        - A key pair consists of a private key and a public key.
+- > [2016 Q5] A) Popek and Goldberg laid down the foundations for computer virtualization in their 1974 paper, Formal Requirements for Third Generation Architectures.
+    - > a. Identify and explain the different types of classification of instruction sets for virtualization to occur according to the theorem of Popek and Goldberg. You should include the relationships between the instruction sets. [3]
+        - |||
+            |---|---|
+            |Privileged Instructions|instructions that trap if the processor is in user mode and do not trap in kernel mode
+            |Sensitive Instructions|instructions whose behaviour depends on the mode or configuration of the hardware|
+            |Innocuous Instructions|instructions that are neither privileged nor sensitive|
+        - relation = subset
+            - For any conventional third generation computer, a virtual machine monitor may be constructed if the set of **sensitive instructions** for that computer is a subset of the set of **privileged instructions** i.e. have to be trappable
+        - innocuous instructions do not need to be trapped and dealt with and hence can be considered separately.
+    - > b. Describe how these principles are realized by modern virtual machine monitors/hypervisors. [2]
+        - |Typical Virtualisation Strategy||
+            |---|---|
+            |De-privileging (trap-and-emulate)|trap-and-emulate: VMM emulates the effect on system/hardware resources of privileged instructions whose execution traps into the VMM|
+            |Primary/shadow structures|1. VMM maintains “shadow” copies of critical structures whose “primary” versions are manipulated by the GuestOS, e.g. memory page tables<br/>2. Primary copies needed to insure correct versions are visible to GuestOS
+            |Memory traces|Controlling access to memory so that the shadow and primary structure remain coherent
+        - sensitive/privileged instructions (calls) have to be trapped and dealt with
+    - > c. Explain the differences between full virtualization and para-virtualisation. Give an example of a hypervisor that uses full virtualization and an example of a hypervisor that uses paravirtualisation. [2]
+        - full virtualization
+            - allow an unmodified guest OS to run in isolation by simulating full hardware 
+            - VMWare
+        - para-virtualisation
+            - VMM/Hypervisor exposes special interface to a modified/hypervisor-aware Guest OS for better performance.
+            - Xen
+    - >  d. Describe the role of a virtual machine manager/hypervisor with regards to memory management and shadow page tables. [3]
+        - VMM maintains shadow page tables in lock-step with the page tables. Additional management overhead is added.
+        - VMM emulates the effect on system/hardware resources of privileged instructions whose execution traps into the VMM
+        - VMM maintains “shadow” copies of critical structures whose “primary” versions are manipulated by the GuestOS
+        - Control access to memory so that the shadow and primary structure remain coherent
+
 
 ## Week 8.2 – OpenStack & Comparing and Contrasting AWS with NeCTAR Cloud
 - Offers free and open-source software platform for cloud computing for <u>**IaaS**</u>
@@ -1946,7 +2013,8 @@ Terminology
         - <img src="./docs/24.jpg" width="60%" height="50%" />
     - Spark ships with a cluster manager of its own, but it can work with other cluster managers, such as YARN or MESOS.
 3. The Spark Shell
-    - Lecture 09:: 00:39:50
+    - allows to send commands to the cluster interactively in either Scala or Python.
+    - While the shell can be extremely useful, it prevents Spark from deploying all of its optimizations, leading to poor performance.
 4. Programming on Spark
     - Lecture 09:: 00:34:24
 5. Spark Runtime Architecture
@@ -1971,6 +2039,12 @@ Terminology
         - Driver program + Executor
       - Spark Context
         - The general configuration of the job
+            - The **deployment is set in the Stpark Context**, which is also used to set the configuration of a Spark application, including the cluster it connects to in cluster mode.
+                -  For instance, this hard-coded Spark Context directs the execution to run locally, using 2 threads (usually, it is set to the number of cores): 
+                    - sc = new SparkContext(new SparkConf().setMaster("local[2]"));
+                - This other hard-coded line directs the execution to a remote cluster:
+                    - sc = new SparkContext(new SparkConf().setMaster("spark://192.168.1.12:6066"));
+            - Spark Contexts can also be used to **tune the execution** by setting the memory, or the number of executors to use.  
     - These different components can be arranged in **<u>three</u>** different deployment modes (below) across the cluster
     - Spark Runtime Mode
         - Local Mode
@@ -1985,6 +2059,14 @@ Terminology
             - The driver program talks directly to the executors on the worker nodes. Therefore, the machine hosting the driver program has to be connected to the cluster until job completion.
             - When used? 
                 - Client mode must be used when the applications are interactive, as happens in the Python or Scala Spark shells.
+5. Caching Intermediate Results
+    - rdd.persist(storageLevel) can be used to save an RDD either in memory and/or disk. 
+        - The storageLevel can be tuned to a different mix of use of RAM or disk to store the RDD
+        - since RDDs are immutable, 
+            - the result of the final transformation is cached, not the input RDD. 
+            - In other words, when this statement is executed
+                - rddB = rddA.persist(DISK_ONLY)
+                - only rddB has been written to disk.
 6. Resilient Distributed Dataset (RDDs) (Central to Spark)
     - What is it?
         - the way data are stored in Spark during computation, and understanding them is crucial to writing programs in Spark:
@@ -2004,6 +2086,20 @@ Terminology
     - How to Build an RDD?
         - created out of data stored elsewhere (HDFS, a local text file, a DBMS)
         - created out of collections too, using the parallelize function
+    - RDD variable
+        - are just placeholders until the action is encountered. Remember that the Spark application is not just the driver program, but all the RDD processing that takes place on the cluster
+    - RDD Transformations
+        - rdd.filter(lambda) selects elements from an RDD
+        - rdd.distinct() returns an RDD without duplicated elements
+        - rdd.union(otherRdd) merges two RDDs
+        - rdd.intersection(otherRdd) returns elements common to both
+        - rdd.subtract(otherRdd) removes elements of otherRdd
+        - rdd.cartesian(otherRdd) returns the Cartesian product of both RDDs
+    - RDD Action
+        - rdd.collect() returns all elements in an RDD
+        - rdd.count() returns the number of elements in an RDD
+        - rdd.reduce(lambda) applies the function to all elements repeatedly, resulting in one result (say, the sum of all elements. Not to be confused with the reduceByKey transformation)
+        - rdd.foreach(lambda) applies lambda to all elements of an RDD
 
 ### past exam
 - > [2014 Q5] B) Apache Hadoop is a software framework that enables processing of large data sets.
@@ -2021,6 +2117,8 @@ Terminology
         - The cluster manager and Spark appplication is hosted on the cluster.
     - > Client [1]
         - The driver program is hosted on the same computer that is not part of the cluster, while the cluster manager and executors are hosted on the cluster.
+- > [2017 Q2] B What is the Apache Hadoop Resilient Distributed Dataset (RDD) operation type that triggers RDD evaluations? Which operation type does not trigger RDD evaluations? [2]
+    - Spark's RDDs provide two kinds of operations: transformations and actions, where only actions such as reduce or collect trigger the evaluation. So transformation does not trigger RDD evaluations.
 
 ## Week 10.1 – Security and Clouds
 1. Why is security so important?
@@ -2347,6 +2445,8 @@ Terminology
     - > d. Why isn’t Shibboleth used to access Cloud-based systems more generally? [2]
         - related to trust. differnt cloud provider requires different facts in the Shibboleth
             - e.g.: Amazon requires you credit card info while unimelb only requires student info.
+        - Static federation
+        - no single CA
 - > [2015 Q5] B) The Internet2 Shibboleth technology as currently supported by the Australia Access Federation provides federated authentication.
     - > a. Explain what is meant by this italicized term and discuss the advantages and disadvantages of the Shibboleth approach for security. [3]
         - above
