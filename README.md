@@ -1211,7 +1211,7 @@ Your answer should include the way in which these solutions implement MapReduce.
     - > b. Apache Hadoop Distributed File System (HDFS) [3]
         - Apache Hadoop started as a way to distribute files over a cluster and execute MapReduce tasks
         - HDFS distributed file system so suited for high velocity data (not single server bottleneck)
-        - map reduce for big data processing and increased block size so suited to larger data
+        - MapReduce for big data processing and increased block size so suited to larger data
         - variety needs programming to tackle
     - > c. Apache Spark [3]
         - Spark was designed to reduce the latency inherent in the Hadoop approach for the execution of MapReduce job
