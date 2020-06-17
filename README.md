@@ -523,6 +523,8 @@
     - Compatibility of code and hardware
 4. x-windows forwarding
     - allows you to start up a remote application (on Spartan) but forward the display to your local machine.
+5. Why Module?
+    - have the advantages of being shared with many users on a system and easily allowing multiple installations of the same application but with different versions and compilation options. Sometimes users want the latest and greatest of a particular version of an application for the feature-set they offer. In other cases, such as someone who is participating in a research project, a consistent version of an application is desired. In both cases consistency and therefore reproducibility is attained.
 - Why performance and scale matters, and why it should matter to you.
 - An introduction to Spartan, University of Melbourne's HPC/cloud hybrid system
 - Logging in, help, and environment modules.
@@ -556,6 +558,7 @@
     - Load right modules
     - benchmark small data then scale up to appropriate large value
 - > [sample Q5] E) Describe some of the challenges with application benchmarking on HPC facilities. [2]
+    - Stuck in queue for a long time
     - Shared facility is not just for you. Thus, can't guarantee runs the same results for same application
     - benchmarking apps is hard
         - different alogrithm implementation different performance
@@ -634,6 +637,10 @@ Cloud computing is a model for enabling ubiquitous, convenient, on-demand networ
 - > [sample Q2 C] What are availability zones in NeCTAR and what restrictions do they impose on NeCTAR Cloud-based application developers? [2]
     - availability zone: locations of data centers used to provide logical view of cloud
     - restriction: can't mount volumes to VMs in remote locations. If you have computer in Melbourne, you can't have your storage somewhere else in a different availability zone and you can't mount that volume.
+- [2017 Q6] b. What are the implications of availability zones with regards to virtual machine instance creation and data volumes offered by NeCTAR? [2]
+    - The implications of availability zones with data volumes is that Can’t mount volumes to VMs in remote locations.
+    - Instances (on Nectar) can be created in and availability zone.
+
 
 ## Workshop week5: Auto-Deployment -- Ansible
 - Reason for auto-deployment (**comparison**)
@@ -697,6 +704,9 @@ Cloud computing is a model for enabling ubiquitous, convenient, on-demand networ
             - templates the flavor of deployment
                 - e.g.: specify the version of Ubuntu used
         - Ansible scripting allows to automate software deployment including tasks/role
+- > Describe the approach that would be taken using Ansible for scripted deployment of SaaS solutions onto the Cloud. [2]
+    - Create a playbook that contains YAML files. Typical contents include variables, inventories and roles/tasks/templates. Inventories will include the servers/database used for the software etc etc. 
+    - Then say how you would run the script using openrc.sh etc. Note 2 points so massive amounts of detail not needed.
 
 ## Week 6 – Web Services, ReST Services ~~and Twitter demo~~
 
@@ -1191,17 +1201,19 @@ Representational State Transfer (ReST) is intended to evoke an image of how a we
 - Part 2: Introduction to CouchDB, recording 07:: 01:15:16
 
 ### past exam
-    - > [2016 Q3] A) Big data is often associated with data having a range of properties including high volume, high velocity and high variety (heterogeneity).  
-    Discuss the advantages, disadvantages and suitability more generally of the following data solutions with regards to these big data properties:  
-    Your answer should include the way in which these solutions implement MapReduce.
-        - > a. CouchDB [3]
+- > [2016 Q3] A) Big data is often associated with data having a range of properties including high volume, high velocity and high variety (heterogeneity).  
+Discuss the advantages, disadvantages and suitability more generally of the following data solutions with regards to these big data properties:  
+Your answer should include the way in which these solutions implement MapReduce.
+    - > a. CouchDB [3]
         - is a document oriented database which helps to solve the data variaty challenge
         - supports unique index which helps to improve storage space when there is data duplication for high volume challenge
         - the use of mapreduce in CouchDB parallelize data processing from huge amout in a small amount way which can helps to solve the high volume challenge
     - > b. Apache Hadoop Distributed File System (HDFS) [3]
         - Apache Hadoop started as a way to distribute files over a cluster and execute MapReduce tasks
+        - HDFS distributed file system so suited for high velocity data (not single server bottleneck); map reduce for big data processing and increased block size so suited to larger data; variety needs programming to tackle
     - > c. Apache Spark [3]
         - Spark was designed to reduce the latency inherent in the Hadoop approach for the execution of MapReduce job
+        - Spark supports large in memory analysis; richer data processing capabilities (plug-ins); typically used with HDFS to benefit from above; maybe also mention RDDs etc
     - > What other data properties can be associated with big data challenges? [1]
         - Veracity: the level of trust in the data accuracy (provenance); the more diverse sources you have, the more unstructured they are, the less veracity you have.
 - > [2013 Q7] A) Many research domains are facing "big data" challenges. Big data is not just related to the size of the data sets. Explain. [5]
@@ -1655,8 +1667,29 @@ Terminology
 - Offers free and open-source software platform for cloud computing for <u>**IaaS**</u>
 - Consists of interrelated components (services) that control / support compute, storage, and networking resources
 - Often used through web-based dashboards, through command-line tools, or programmatically through ReSTful APIs
+
+### Openstack architecture
+- <img src="./docs/33.jpg" width="60%" height="30%" />
+
+    - As a user, login in through Horizon to have access to cloud and get identity
+        - identity is passed among the components
+        - operation is restricted based on your identity and resource available
+            - reformat other's disk
+    - launch server/instance
+        - identity is passed among the components
+        - operation is restricted based on your identity and resource available
+        - use pre-existing instance, use Ubuntu via Glance's image service
+        - attach some storage 
+            - object storage via Swift or
+            - block storage via Cinder
+        - setup firewall, ssh port via Neutron's Networking Services
+    - **Identity works as a glue among components**
+
 ### Typically asynchronous queuing systems used (AMQP)
 - <img src="./docs/29.jpg" width="60%" height="30%" />
+
+    - AMQP: queueing service for load balance when large request comes
+        - queue an instance creation request and starts when one is released
 
 ### Key Services
 #### Keystone -- Identity Service
@@ -1695,6 +1728,13 @@ Terminology
   - Networking
     - Nova-network
       - Accepts network tasks from queue and manipulates network, e.g. changing IP table rules
+  - <img src="./docs/34.jpg" width="60%" height="30%" />
+    
+    - I need a VM with: 64Gb memory, 8vCPUs, in Melbourne, running Ubuntu 12.04
+        - The call comes in through load balancer and buffered
+        - nova-api Accepts/responds to end user API calls
+        - Nova-scheduler schedules VM instance requests from queue and determines which server host to run
+        -  Nova-conductor mediates interactions between compute services and other components, e.g. image database
 #### Swift - Object Storage
 - Stores and retrieves arbitrary unstructured data objects via ReSTful API
   - e.g.: VM images and data
@@ -1814,7 +1854,12 @@ Terminology
     - Mediates interactions between compute services and other components, e.g. image database via Nova-conductor
     - looking up resoueces required via Swift/Glance
     - preparing the VM on machine required
-    
+- > Describe the approach that would be taken using the openStack Heat service for deployment of SaaS solutions onto the Cloud. [2]
+    1. Create the template file according to your requirements
+    2. Provide environment details (name of key file, image id, etc)
+    3. Select a name for your stack and confirm the parameters
+    4. Make sure rollback checkbox is marked, so if anything goes wrong, all partially created resources get dumped too
+    5. Wait for the magic to happen! 
 
 
 ## Week 8.3 - Serverless (Function as a Service (FaaS))
@@ -2173,6 +2218,7 @@ Terminology
             - When you login The university of Melbourne Cloud, you could also access the amazon cloud
         - **The Grid model (and Shib model!) needed**
         - **Currently not solved for Cloud-based IaaS**
+            - has to build by deveoplers
         - Onus (责任) is on non-Cloud developers to define/support this
     - Auditing 
         - What is it?
@@ -2184,7 +2230,7 @@ Terminology
             - Across federations of Clouds?
             - Log/keep all information?
             - For how long?
-        - Problem
+        - Problem/challenge 
             - The record are distributed most of time
         - Solution
             - Use block-chain ledger to provide confidentiality of the log
@@ -2237,7 +2283,23 @@ Terminology
                 - More scalable solution needed
                 - Decentralised Authentication (Proof of Identity) thru Shibboleth
                     - <img src="./docs/28.jpg" width="80%" height="50%" />
-                    - Supports Single-Sign On (in case you were unaware)
+                    
+                        - Supports Single-Sign On (in case you were unaware)
+                        - service provider
+                            - web site/Journal in the picture
+                        - identity provider
+                            - the federation, listed in this case
+                    - <img src="./docs/32.png" width="60%" height="50%" />
+                        
+                        - How does the role of AURIN project go into the unimelb system
+                        - How does the unimelb system a user is involved in the AURIN project
+                        - How does the unimelb system know to send the information to the service provider related to which when it is required
+                            - Only send one attribute related to the project not the whole database
+                        - How does the site know what to do with these information when gets it
+                            - certificated have to be trusted
+                        - If the site is a gateway to remote service, how does these privilages which have been defined in the unimelb to allow me to access the site. 
+                            - How can this be used to unlock the remote services which are outside of unimelb
+                        - Only several attributes used to federation authentication access control
     - Public Key Infrastructures (PKI) underpins MANY systems
         - What is it?
             - an arrangement that binds public key with respective identities of entities(like people and organization). 
