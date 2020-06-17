@@ -2072,8 +2072,10 @@ Terminology
         - a single transformation operating on a single partition of data on a single node
       - Stage
         - Set of task operating on a single partition
-        - A job is composed of more than one stage when data are to be transferred across node
+      - Stage \& performance
         - The fewer the number of stages, the faster the computation (shuffling data across the cluster is slow)
+      - Stage \& Job
+        - A job is composed of more than one stage when data are to be transferred across node
       - Executors
         - The processes in which tasks are executed
       - Cluster Manager
