@@ -1210,10 +1210,15 @@ Your answer should include the way in which these solutions implement MapReduce.
         - the use of mapreduce in CouchDB parallelize data processing from huge amout in a small amount way which can helps to solve the high volume challenge
     - > b. Apache Hadoop Distributed File System (HDFS) [3]
         - Apache Hadoop started as a way to distribute files over a cluster and execute MapReduce tasks
-        - HDFS distributed file system so suited for high velocity data (not single server bottleneck); map reduce for big data processing and increased block size so suited to larger data; variety needs programming to tackle
+        - HDFS distributed file system so suited for high velocity data (not single server bottleneck)
+        - map reduce for big data processing and increased block size so suited to larger data
+        - variety needs programming to tackle
     - > c. Apache Spark [3]
         - Spark was designed to reduce the latency inherent in the Hadoop approach for the execution of MapReduce job
-        - Spark supports large in memory analysis; richer data processing capabilities (plug-ins); typically used with HDFS to benefit from above; maybe also mention RDDs etc
+        - Spark supports large in memory analysis
+        - richer data processing capabilities (plug-ins)
+        - typically used with HDFS to benefit from above two
+        - maybe also mention RDDs etc
     - > What other data properties can be associated with big data challenges? [1]
         - Veracity: the level of trust in the data accuracy (provenance); the more diverse sources you have, the more unstructured they are, the less veracity you have.
 - > [2013 Q7] A) Many research domains are facing "big data" challenges. Big data is not just related to the size of the data sets. Explain. [5]
