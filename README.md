@@ -637,7 +637,7 @@ Cloud computing is a model for enabling ubiquitous, convenient, on-demand networ
 - > [sample Q2 C] What are availability zones in NeCTAR and what restrictions do they impose on NeCTAR Cloud-based application developers? [2]
     - availability zone: locations of data centers used to provide logical view of cloud
     - restriction: can't mount volumes to VMs in remote locations. If you have computer in Melbourne, you can't have your storage somewhere else in a different availability zone and you can't mount that volume.
-- [2017 Q6] b. What are the implications of availability zones with regards to virtual machine instance creation and data volumes offered by NeCTAR? [2]
+- > [2017 Q6] b. What are the implications of availability zones with regards to virtual machine instance creation and data volumes offered by NeCTAR? [2]
     - The implications of availability zones with data volumes is that Can’t mount volumes to VMs in remote locations.
     - Instances (on Nectar) can be created in and availability zone.
 
@@ -1205,9 +1205,15 @@ Representational State Transfer (ReST) is intended to evoke an image of how a we
 Discuss the advantages, disadvantages and suitability more generally of the following data solutions with regards to these big data properties:  
 Your answer should include the way in which these solutions implement MapReduce.
     - > a. CouchDB [3]
-        - is a document oriented database which helps to solve the data variaty challenge
+        - document-oriented approach (less fine grained schema which is typically needed for many big data scenarios)
+            - is a document oriented database which helps to solve the data variaty challenge
+        - supports MVCC for availability and partition tolerance
+        - support for MapReduce for data analytics
+            - the use of mapreduce in CouchDB parallelize data processing from huge amout in a small amount way which can helps to solve the high volume challenge
+        - may not be suitable for all  big data scenarios (where consistency needed)
+        - MapReduce not as rich analytics as others
+            - e.g. running machine learning algorithms hence we have Spark
         - supports unique index which helps to improve storage space when there is data duplication for high volume challenge
-        - the use of mapreduce in CouchDB parallelize data processing from huge amout in a small amount way which can helps to solve the high volume challenge
     - > b. Apache Hadoop Distributed File System (HDFS) [3]
         - Apache Hadoop started as a way to distribute files over a cluster and execute MapReduce tasks
         - HDFS distributed file system so suited for high velocity data (not single server bottleneck)
